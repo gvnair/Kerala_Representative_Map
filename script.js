@@ -9,7 +9,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 // Alliance colors
-function getColor(front) {
+function getColor(winning_front) {
 
   if (winning_front === "LDF") return "#e53935";
   if (winning_front === "UDF") return "#1e88e5";
@@ -24,7 +24,7 @@ function getColor(front) {
 function style(feature) {
 
   return {
-    fillColor: getColor(feature.properties.front),
+    fillColor: getColor(feature.properties.winning_front),
     weight: 1,
     opacity: 1,
     color: "white",
@@ -161,17 +161,14 @@ fetch('data/loksabha_kerala_mapped.geojson')
 
             const p = feature.properties;
 
-
-
             layer.bindTooltip(
-              p.ac_name,
+              p.Asmbly_Con,
               {
                 sticky: true,
                 direction: "top",
                 className: "constituency-label"
               }
             );
-
 
 
             layer.on({
@@ -186,23 +183,28 @@ fetch('data/loksabha_kerala_mapped.geojson')
 
                 layer.bindPopup(`
                   <div style="font-size:14px;">
-
+                
                     <strong style="font-size:16px;">
                       ${p.Asmbly_Con}
                     </strong>
-
+                
                     <br><br>
-
+                
+                    <strong>District:</strong>
+                    ${p.District || "N/A"}<br>
+                
                     <strong>MLA:</strong>
                     ${p.elected_representative}<br>
-
+                
                     <strong>Party:</strong>
                     ${p.winning_party}<br>
-
+                
                     <strong>Front:</strong>
                     ${p.winning_front}<br>
-
-                  
+                
+                    <strong>Election Year:</strong>
+                    ${"2026"}<br>
+                
                   </div>
                 `).openPopup();
 
@@ -217,17 +219,14 @@ fetch('data/loksabha_kerala_mapped.geojson')
 
 
         // Layer control
-        const overlays = {
+        const baseMaps = {
           "Lok Sabha": lsLayer,
           "State Assembly": acLayer
         };
-
-
-
-        L.control.layers(null, overlays, {
+        
+        L.control.layers(baseMaps, null, {
           collapsed: false
         }).addTo(map);
-
       });
 
   })
