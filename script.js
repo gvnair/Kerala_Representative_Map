@@ -8,7 +8,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 function getColor(front) {
 
   if (front === "LDF") return "red";
-  if (front === "UDF") return "green";
+  if (front === "UDF") return "blue";
   if (front === "NDA") return "orange";
 
   return "gray";
