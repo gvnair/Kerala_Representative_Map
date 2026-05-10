@@ -1,72 +1,129 @@
-var map = L.map('map').setView([10.8505, 76.2711], 7);
+var map = L.map('map');
 
+
+// Base map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
 
+
+// Alliance colors
 function getColor(front) {
 
-  if (front === "LDF") return "red";
-  if (front === "UDF") return "blue";
-  if (front === "NDA") return "orange";
+  if (winning_front === "LDF") return "#e53935";
+  if (winning_front === "UDF") return "#1e88e5";
+  if (winning_front === "NDA") return "#fb8c00";
 
-  return "gray";
+  return "#9e9e9e";
 }
+
+
+
+// Polygon style
+function style(feature) {
+
+  return {
+    fillColor: getColor(feature.properties.front),
+    weight: 1,
+    opacity: 1,
+    color: "white",
+    fillOpacity: 0.75
+  };
+
+}
+
+
+
+// Hover effect
+function highlightFeature(e) {
+
+  const layer = e.target;
+
+  layer.setStyle({
+    weight: 3,
+    color: "#222",
+    fillOpacity: 1
+  });
+
+  layer.bringToFront();
+}
+
+
+
+// ----------------------------
+// Lok Sabha Layer
+// ----------------------------
+
+let lsLayer;
+let acLayer;
+
 
 
 fetch('data/loksabha_kerala_mapped.geojson')
 
   .then(res => res.json())
 
-  .then(data => {
+  .then(lsData => {
 
-    const layer = L.geoJSON(data, {
+    lsLayer = L.geoJSON(lsData, {
 
-      style: function(feature) {
-
-        return {
-          fillColor: getColor(feature.properties.front),
-          weight: 1,
-          color: "white",
-          fillOpacity: 0.7
-        };
-
-      },
+      style: style,
 
       onEachFeature: function(feature, layer) {
 
         const p = feature.properties;
 
+
+
+        // Tooltip
+        layer.bindTooltip(
+          p.ls_seat_name,
+          {
+            sticky: true,
+            direction: "top",
+            className: "constituency-label"
+          }
+        );
+
+
+
+        // Events
         layer.on({
 
-          mouseover: function(e) {
-
-            e.target.setStyle({
-              weight: 2,
-              fillOpacity: 0.9
-            });
-
-          },
+          mouseover: highlightFeature,
 
           mouseout: function(e) {
-
-            layer.setStyle({
-              weight: 1,
-              fillOpacity: 0.7
-            });
-
+            lsLayer.resetStyle(e.target);
           },
 
           click: function() {
 
             layer.bindPopup(`
-              <strong>${p.ls_seat_name}</strong><br>
-              MP: ${p.elected_representative}<br>
-              Party: ${p.winning_party}<br>
-              Front: ${p.front}<br>
-              Margin: ${p.margin}<br>
-              Turnout: ${p.turnout_percentage}
+              <div style="font-size:14px;">
+
+                <strong style="font-size:16px;">
+                  ${p.ls_seat_name}
+                </strong>
+
+                <br><br>
+
+                <strong>MP:</strong>
+                ${p.elected_representative}<br>
+
+                <strong>Party:</strong>
+                ${p.winning_party}<br>
+
+                <strong>Front:</strong>
+                ${p.winning_front}<br>
+
+                <strong>Margin:</strong>
+                ${p.margin}<br>
+
+                <strong>Turnout:</strong>
+                ${p.turnout_percentage}
+
+              </div>
             `).openPopup();
 
           }
@@ -75,9 +132,103 @@ fetch('data/loksabha_kerala_mapped.geojson')
 
       }
 
-    }).addTo(map);
+    });
 
-    map.fitBounds(layer.getBounds());
+
+
+    // Add default layer
+    lsLayer.addTo(map);
+
+    map.fitBounds(lsLayer.getBounds());
+
+
+
+    // ----------------------------
+    // Assembly Layer
+    // ----------------------------
+
+    fetch('data/stateassembly_2026_mapped.geojson')
+
+      .then(res => res.json())
+
+      .then(acData => {
+
+        acLayer = L.geoJSON(acData, {
+
+          style: style,
+
+          onEachFeature: function(feature, layer) {
+
+            const p = feature.properties;
+
+
+
+            layer.bindTooltip(
+              p.ac_name,
+              {
+                sticky: true,
+                direction: "top",
+                className: "constituency-label"
+              }
+            );
+
+
+
+            layer.on({
+
+              mouseover: highlightFeature,
+
+              mouseout: function(e) {
+                acLayer.resetStyle(e.target);
+              },
+
+              click: function() {
+
+                layer.bindPopup(`
+                  <div style="font-size:14px;">
+
+                    <strong style="font-size:16px;">
+                      ${p.Asmbly_Con}
+                    </strong>
+
+                    <br><br>
+
+                    <strong>MLA:</strong>
+                    ${p.elected_representative}<br>
+
+                    <strong>Party:</strong>
+                    ${p.winning_party}<br>
+
+                    <strong>Front:</strong>
+                    ${p.winning_front}<br>
+
+                  
+                  </div>
+                `).openPopup();
+
+              }
+
+            });
+
+          }
+
+        });
+
+
+
+        // Layer control
+        const overlays = {
+          "Lok Sabha": lsLayer,
+          "State Assembly": acLayer
+        };
+
+
+
+        L.control.layers(null, overlays, {
+          collapsed: false
+        }).addTo(map);
+
+      });
 
   })
 
