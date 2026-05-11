@@ -1,14 +1,20 @@
 var map = L.map('map');
 
 
-// Base map
+// ----------------------------
+// Base Map
+// ----------------------------
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
 
 
-// Alliance colors
+// ----------------------------
+// Alliance Colors
+// ----------------------------
+
 function getColor(winning_front) {
 
   if (winning_front === "LDF") return "#e53935";
@@ -20,7 +26,10 @@ function getColor(winning_front) {
 
 
 
-// Polygon style
+// ----------------------------
+// Constituency Style
+// ----------------------------
+
 function style(feature) {
 
   return {
@@ -35,7 +44,10 @@ function style(feature) {
 
 
 
-// Hover effect
+// ----------------------------
+// Hover Highlight
+// ----------------------------
+
 function highlightFeature(e) {
 
   const layer = e.target;
@@ -52,183 +64,303 @@ function highlightFeature(e) {
 
 
 // ----------------------------
-// Lok Sabha Layer
+// Layer Variables
 // ----------------------------
 
 let lsLayer;
 let acLayer;
+let districtLayer;
 
 
 
-fetch('data/loksabha_kerala_mapped.geojson')
+// ----------------------------
+// Load ALL GeoJSON Files
+// ----------------------------
 
-  .then(res => res.json())
+Promise.all([
 
-  .then(lsData => {
+  fetch('data/loksabha_kerala_mapped.geojson')
+    .then(res => res.json()),
 
-    lsLayer = L.geoJSON(lsData, {
+  fetch('data/stateassembly_2026_mapped.geojson')
+    .then(res => res.json()),
 
-      style: style,
+  fetch('data/district.geojson')
+    .then(res => res.json())
 
-      onEachFeature: function(feature, layer) {
+])
 
-        const p = feature.properties;
-
-
-
-        // Tooltip
-        layer.bindTooltip(
-          p.ls_seat_name,
-          {
-            sticky: true,
-            direction: "top",
-            className: "constituency-label"
-          }
-        );
+.then(([lsData, acData, districtData]) => {
 
 
 
-        // Events
-        layer.on({
 
-          mouseover: highlightFeature,
+  // =====================================================
+  // LOK SABHA LAYER
+  // =====================================================
 
-          mouseout: function(e) {
-            lsLayer.resetStyle(e.target);
-          },
+  lsLayer = L.geoJSON(lsData, {
 
-          click: function() {
+    style: style,
 
-            layer.bindPopup(`
-              <div style="font-size:14px;">
+    onEachFeature: function(feature, layer) {
 
-                <strong style="font-size:16px;">
-                  ${p.ls_seat_name}
-                </strong>
+      const p = feature.properties;
 
-                <br><br>
+      layer.bindTooltip(
+        p.ls_seat_name,
+        {
+          sticky: true,
+          direction: "top",
+          className: "constituency-label"
+        }
+      );
 
-                <strong>MP:</strong>
-                ${p.elected_representative}<br>
+      layer.on({
 
-                <strong>Party:</strong>
-                ${p.winning_party}<br>
+        mouseover: highlightFeature,
 
-                <strong>Front:</strong>
-                ${p.winning_front}<br>
+        mouseout: function(e) {
+          lsLayer.resetStyle(e.target);
+        },
 
-                <strong>Margin:</strong>
-                ${p.margin}<br>
+        click: function() {
 
-                <strong>Turnout:</strong>
-                ${p.turnout_percentage}
+          layer.bindPopup(`
 
-              </div>
-            `).openPopup();
+            <div style="font-size:14px;">
 
-          }
+              <strong style="font-size:16px;">
+                ${p.ls_seat_name}
+              </strong>
 
-        });
+              <br><br>
 
-      }
+              <strong>District:</strong>
+              ${p.district || "N/A"}<br>
 
-    });
+              <strong>MP:</strong>
+              ${p.elected_representative}<br>
 
+              <strong>Party:</strong>
+              ${p.winning_party}<br>
 
+              <strong>Front:</strong>
+              ${p.winning_front}<br>
 
-    // Add default layer
-    lsLayer.addTo(map);
+              <strong>Election Year:</strong>
+              ${p.election_year || "2024"}<br>
 
-    map.fitBounds(lsLayer.getBounds());
+              <strong>Margin:</strong>
+              ${p.margin}<br>
 
+              <strong>Turnout:</strong>
+              ${p.turnout_percentage}
 
+            </div>
 
-    // ----------------------------
-    // Assembly Layer
-    // ----------------------------
+          `).openPopup();
 
-    fetch('data/stateassembly_2026_mapped.geojson')
+        }
 
-      .then(res => res.json())
-
-      .then(acData => {
-
-        acLayer = L.geoJSON(acData, {
-
-          style: style,
-
-          onEachFeature: function(feature, layer) {
-
-            const p = feature.properties;
-
-            layer.bindTooltip(
-              p.Asmbly_Con,
-              {
-                sticky: true,
-                direction: "top",
-                className: "constituency-label"
-              }
-            );
-
-
-            layer.on({
-
-              mouseover: highlightFeature,
-
-              mouseout: function(e) {
-                acLayer.resetStyle(e.target);
-              },
-
-              click: function() {
-
-                layer.bindPopup(`
-                  <div style="font-size:14px;">
-                
-                    <strong style="font-size:16px;">
-                      ${p.Asmbly_Con}
-                    </strong>
-                
-                    <br><br>
-                
-                    <strong>District:</strong>
-                    ${p.District || "N/A"}<br>
-                
-                    <strong>MLA:</strong>
-                    ${p.elected_representative}<br>
-                
-                    <strong>Party:</strong>
-                    ${p.winning_party}<br>
-                
-                    <strong>Front:</strong>
-                    ${p.winning_front}<br>
-                
-                    <strong>Election Year:</strong>
-                    ${"2026"}<br>
-                
-                  </div>
-                `).openPopup();
-
-              }
-
-            });
-
-          }
-
-        });
-
-
-
-        // Layer control
-        const baseMaps = {
-          "Lok Sabha": lsLayer,
-          "State Assembly": acLayer
-        };
-        
-        L.control.layers(baseMaps, null, {
-          collapsed: false
-        }).addTo(map);
       });
 
-  })
+    }
 
-  .catch(err => console.error(err));
+  });
+
+
+
+
+  // =====================================================
+  // ASSEMBLY LAYER
+  // =====================================================
+
+  acLayer = L.geoJSON(acData, {
+
+    style: style,
+
+    onEachFeature: function(feature, layer) {
+
+      const p = feature.properties;
+
+      layer.bindTooltip(
+        p.Asmbly_Con,
+        {
+          sticky: true,
+          direction: "top",
+          className: "constituency-label"
+        }
+      );
+
+      layer.on({
+
+        mouseover: highlightFeature,
+
+        mouseout: function(e) {
+          acLayer.resetStyle(e.target);
+        },
+
+        click: function() {
+
+          layer.bindPopup(`
+
+            <div style="font-size:14px;">
+
+              <strong style="font-size:16px;">
+                ${p.Asmbly_Con}
+              </strong>
+
+              <br><br>
+
+              <strong>District:</strong>
+              ${p.District || "N/A"}<br>
+
+              <strong>MLA:</strong>
+              ${p.elected_representative}<br>
+
+              <strong>Party:</strong>
+              ${p.winning_party}<br>
+
+              <strong>Front:</strong>
+              ${p.winning_front}<br>
+
+              <strong>Election Year:</strong>
+              ${2026}<br>
+
+              <strong>Margin:</strong>
+              ${p.margin}<br>
+
+              <strong>Turnout:</strong>
+              ${p.turnout_percentage}
+
+            </div>
+
+          `).openPopup();
+
+        }
+
+      });
+
+    }
+
+  });
+
+
+
+
+  // =====================================================
+  // DISTRICT LAYER
+  // =====================================================
+
+  districtLayer = L.geoJSON(districtData, {
+
+    style: function(feature) {
+
+      return {
+        color: "#222",
+        weight: 2,
+        fillColor: "#eeeeee",
+        fillOpacity: 0.0
+      };
+
+    },
+
+    onEachFeature: function(feature, layer) {
+
+      const p = feature.properties;
+
+      layer.bindTooltip(
+        p.DISTRICT || p.name,
+        {
+          sticky: true,
+          direction: "top",
+          className: "constituency-label"
+        }
+      );
+
+    }
+
+  });
+
+
+
+
+  // =====================================================
+  // DEFAULT LAYER
+  // =====================================================
+
+  lsLayer.addTo(map);
+
+  map.fitBounds(lsLayer.getBounds());
+
+
+
+
+  // =====================================================
+  // TOGGLE CONTROL
+  // =====================================================
+
+  const baseMaps = {
+    "Lok Sabha": lsLayer,
+    "State Assembly": acLayer,
+    "Districts": districtLayer
+  };
+
+
+
+  L.control.layers(baseMaps, null, {
+    collapsed: false
+  }).addTo(map);
+
+
+
+
+  // =====================================================
+  // LEGEND
+  // =====================================================
+
+  const legend = L.control({
+    position: "bottomright"
+  });
+
+  legend.onAdd = function () {
+
+    const div = L.DomUtil.create("div", "info legend");
+
+    div.innerHTML = `
+
+      <h4>Legend</h4>
+
+      <div>
+        <span class="legend-color" style="background:#e53935;"></span>
+        LDF
+      </div>
+
+      <div>
+        <span class="legend-color" style="background:#1e88e5;"></span>
+        UDF
+      </div>
+
+      <div>
+        <span class="legend-color" style="background:#fb8c00;"></span>
+        NDA
+      </div>
+
+      <hr>
+
+      <div>
+        <span class="district-line"></span>
+        District Boundary
+      </div>
+
+    `;
+
+    return div;
+  };
+
+  legend.addTo(map);
+
+})
+
+.catch(err => console.error(err));
