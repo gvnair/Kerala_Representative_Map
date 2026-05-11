@@ -136,9 +136,6 @@ Promise.all([
 
               <br><br>
 
-              <strong>District:</strong>
-              ${p.district || "N/A"}<br>
-
               <strong>MP:</strong>
               ${p.elected_representative}<br>
 
