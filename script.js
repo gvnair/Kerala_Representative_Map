@@ -227,7 +227,7 @@ Promise.all([
               ${p.winning_front}<br>
 
               <strong>Election Year:</strong>
-              ${p.election_year || "2021"}<br>
+              ${p.election_year || "2026"}<br>
 
             </div>
 
