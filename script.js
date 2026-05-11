@@ -1,19 +1,18 @@
 var map = L.map('map');
 
 
-// ----------------------------
-// Base Map
-// ----------------------------
+// =====================================================
+// BASE MAP
+// =====================================================
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
 
-
-// ----------------------------
-// Alliance Colors
-// ----------------------------
+// =====================================================
+// ALLIANCE COLORS
+// =====================================================
 
 function getColor(winning_front) {
 
@@ -25,10 +24,9 @@ function getColor(winning_front) {
 }
 
 
-
-// ----------------------------
-// Constituency Style
-// ----------------------------
+// =====================================================
+// CONSTITUENCY STYLE
+// =====================================================
 
 function style(feature) {
 
@@ -39,14 +37,12 @@ function style(feature) {
     color: "white",
     fillOpacity: 0.75
   };
-
 }
 
 
-
-// ----------------------------
-// Hover Highlight
-// ----------------------------
+// =====================================================
+// HOVER HIGHLIGHT
+// =====================================================
 
 function highlightFeature(e) {
 
@@ -62,20 +58,18 @@ function highlightFeature(e) {
 }
 
 
-
-// ----------------------------
-// Layer Variables
-// ----------------------------
+// =====================================================
+// LAYER VARIABLES
+// =====================================================
 
 let lsLayer;
 let acLayer;
 let districtLayer;
 
 
-
-// ----------------------------
-// Load ALL GeoJSON Files
-// ----------------------------
+// =====================================================
+// LOAD ALL DATA
+// =====================================================
 
 Promise.all([
 
@@ -94,7 +88,6 @@ Promise.all([
 
 
 
-
   // =====================================================
   // LOK SABHA LAYER
   // =====================================================
@@ -107,6 +100,12 @@ Promise.all([
 
       const p = feature.properties;
 
+
+      // Standardized search name
+      feature.properties.name = p.ls_seat_name;
+
+
+      // Tooltip
       layer.bindTooltip(
         p.ls_seat_name,
         {
@@ -116,6 +115,8 @@ Promise.all([
         }
       );
 
+
+      // Events
       layer.on({
 
         mouseover: highlightFeature,
@@ -146,7 +147,7 @@ Promise.all([
               ${p.winning_front}<br>
 
               <strong>Election Year:</strong>
-              ${p.election_year || "2024"}<br>
+              ${2024}<br>
 
               <strong>Margin:</strong>
               ${p.margin}<br>
@@ -157,15 +158,10 @@ Promise.all([
             </div>
 
           `).openPopup();
-
         }
-
       });
-
     }
-
   });
-
 
 
 
@@ -181,6 +177,12 @@ Promise.all([
 
       const p = feature.properties;
 
+
+      // Standardized search name
+      feature.properties.name = p.Asmbly_Con;
+
+
+      // Tooltip
       layer.bindTooltip(
         p.Asmbly_Con,
         {
@@ -190,6 +192,8 @@ Promise.all([
         }
       );
 
+
+      // Events
       layer.on({
 
         mouseover: highlightFeature,
@@ -223,26 +227,15 @@ Promise.all([
               ${p.winning_front}<br>
 
               <strong>Election Year:</strong>
-              ${2026}<br>
-
-              <strong>Margin:</strong>
-              ${p.margin}<br>
-
-              <strong>Turnout:</strong>
-              ${p.turnout_percentage}
+              ${p.election_year || "2021"}<br>
 
             </div>
 
           `).openPopup();
-
         }
-
       });
-
     }
-
   });
-
 
 
 
@@ -258,17 +251,21 @@ Promise.all([
         color: "#222",
         weight: 2,
         fillColor: "#eeeeee",
-        fillOpacity: 0.0
+        fillOpacity: 0.5
       };
-
     },
 
     onEachFeature: function(feature, layer) {
 
       const p = feature.properties;
 
+
+      // Standardized search name
+      feature.properties.name = p.DISTRICT;
+
+
       layer.bindTooltip(
-        p.DISTRICT || p.name,
+        p.DISTRICT,
         {
           sticky: true,
           direction: "top",
@@ -276,10 +273,23 @@ Promise.all([
         }
       );
 
+
+      layer.on({
+
+        mouseover: function(e) {
+
+          e.target.setStyle({
+            weight: 3,
+            fillOpacity: 0.7
+          });
+        },
+
+        mouseout: function(e) {
+          districtLayer.resetStyle(e.target);
+        }
+      });
     }
-
   });
-
 
 
 
@@ -290,7 +300,6 @@ Promise.all([
   lsLayer.addTo(map);
 
   map.fitBounds(lsLayer.getBounds());
-
 
 
 
@@ -305,11 +314,9 @@ Promise.all([
   };
 
 
-
   L.control.layers(baseMaps, null, {
     collapsed: false
   }).addTo(map);
-
 
 
 
@@ -350,13 +357,64 @@ Promise.all([
         <span class="district-line"></span>
         District Boundary
       </div>
-
     `;
 
     return div;
   };
 
   legend.addTo(map);
+
+
+
+  // =====================================================
+  // SEARCH CONTROL
+  // =====================================================
+
+  const searchableLayers = L.layerGroup([
+    lsLayer,
+    acLayer,
+    districtLayer
+  ]);
+
+
+  const searchControl = new L.Control.Search({
+
+    layer: searchableLayers,
+
+    propertyName: 'name',
+
+    initial: false,
+
+    zoom: 10,
+
+    marker: false,
+
+    moveToLocation: function(latlng, title, map) {
+
+      map.setView(latlng, 10);
+    }
+  });
+
+
+  searchControl.on('search:locationfound', function(e) {
+
+    if (e.layer.setStyle) {
+
+      e.layer.setStyle({
+        weight: 4,
+        color: '#000',
+        fillOpacity: 1
+      });
+    }
+
+
+    if (e.layer.openPopup) {
+      e.layer.openPopup();
+    }
+  });
+
+
+  map.addControl(searchControl);
 
 })
 

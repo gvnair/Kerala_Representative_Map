@@ -2,19 +2,25 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
+
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 
 #map {
-  height: 100vh;
   width: 100%;
+  height: 100vh;
+
   background: #f5f5f5;
 }
 
 
-/* Constituency labels */
+/* ----------------------------------
+   Tooltip Labels
+---------------------------------- */
+
 .constituency-label {
 
   background: rgba(255, 255, 255, 0.95);
@@ -34,10 +40,93 @@ body {
 }
 
 
-/* Remove tooltip arrow */
+/* Remove tooltip arrows */
 .leaflet-tooltip-top:before,
 .leaflet-tooltip-bottom:before,
 .leaflet-tooltip-left:before,
 .leaflet-tooltip-right:before {
   display: none;
+}
+
+
+/* ----------------------------------
+   Legend
+---------------------------------- */
+
+.info.legend {
+
+  background: white;
+
+  padding: 12px 14px;
+
+  border-radius: 8px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+
+  font-size: 13px;
+  line-height: 22px;
+
+  color: #222;
+}
+
+
+.info.legend h4 {
+
+  margin: 0 0 8px 0;
+
+  font-size: 14px;
+}
+
+
+.legend-color {
+
+  display: inline-block;
+
+  width: 14px;
+  height: 14px;
+
+  margin-right: 8px;
+
+  border-radius: 2px;
+}
+
+
+.district-line {
+
+  display: inline-block;
+
+  width: 18px;
+
+  border-top: 3px solid #111;
+
+  margin-right: 8px;
+
+  position: relative;
+  top: -2px;
+}
+
+
+/* ----------------------------------
+   Search Bar
+---------------------------------- */
+
+.leaflet-control-search {
+
+  background: white;
+
+  border-radius: 6px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+
+.leaflet-control-search input {
+
+  width: 220px;
+
+  padding: 6px 10px;
+
+  border: none;
+
+  font-size: 14px;
 }
