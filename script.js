@@ -104,6 +104,9 @@ Promise.all([
       // Standardized search name
       feature.properties.name = p.ls_seat_name;
 
+      feature.properties.search_label =
+      `${p.ls_seat_name} (Lok Sabha)`;
+
 
       // Tooltip
       layer.bindTooltip(
@@ -180,6 +183,9 @@ Promise.all([
 
       // Standardized search name
       feature.properties.name = p.Asmbly_Con;
+
+      feature.properties.search_label =
+        `${p.Asmbly_Con} (Assembly)`;
 
 
       // Tooltip
@@ -263,6 +269,9 @@ Promise.all([
       // Standardized search name
       feature.properties.name = p.DISTRICT;
 
+      feature.properties.search_label =
+        `${p.DISTRICT} (District)`;
+
 
       layer.bindTooltip(
         p.DISTRICT,
@@ -291,17 +300,18 @@ Promise.all([
     }
   });
 
+// =====================================================
+// DEFAULT LAYER
+// =====================================================
+
+map.addLayer(lsLayer);
+
+map.fitBounds(lsLayer.getBounds());
 
 
-  // =====================================================
-  // DEFAULT LAYER
-  // =====================================================
-
-  lsLayer.addTo(map);
-
-  map.fitBounds(lsLayer.getBounds());
-
-
+// Ensure only LS layer loads initially
+map.removeLayer(acLayer);
+map.removeLayer(districtLayer);
 
   // =====================================================
   // TOGGLE CONTROL
@@ -381,7 +391,7 @@ Promise.all([
 
     layer: searchableLayers,
 
-    propertyName: 'name',
+    propertyName: 'search_label',
 
     initial: false,
 
@@ -395,22 +405,83 @@ Promise.all([
     }
   });
 
-
   searchControl.on('search:locationfound', function(e) {
 
+    const props = e.layer.feature.properties;
+  
+  
+    // =========================
+    // Switch to Lok Sabha Layer
+    // =========================
+  
+    if (props.ls_seat_name) {
+  
+      if (map.hasLayer(acLayer)) {
+        map.removeLayer(acLayer);
+      }
+  
+      if (map.hasLayer(districtLayer)) {
+        map.removeLayer(districtLayer);
+      }
+  
+      map.addLayer(lsLayer);
+    }
+  
+  
+    // =========================
+    // Switch to Assembly Layer
+    // =========================
+  
+    if (props.Asmbly_Con) {
+  
+      if (map.hasLayer(lsLayer)) {
+        map.removeLayer(lsLayer);
+      }
+  
+      if (map.hasLayer(districtLayer)) {
+        map.removeLayer(districtLayer);
+      }
+  
+      map.addLayer(acLayer);
+    }
+  
+  
+    // =========================
+    // Switch to District Layer
+    // =========================
+  
+    if (props.DISTRICT) {
+  
+      if (map.hasLayer(lsLayer)) {
+        map.removeLayer(lsLayer);
+      }
+  
+      if (map.hasLayer(acLayer)) {
+        map.removeLayer(acLayer);
+      }
+  
+      map.addLayer(districtLayer);
+    }
+  
+  
+    // Highlight searched feature
+  
     if (e.layer.setStyle) {
-
+  
       e.layer.setStyle({
         weight: 4,
         color: '#000',
         fillOpacity: 1
       });
     }
-
-
+  
+  
+    // Open popup if available
+  
     if (e.layer.openPopup) {
       e.layer.openPopup();
     }
+  
   });
 
 
