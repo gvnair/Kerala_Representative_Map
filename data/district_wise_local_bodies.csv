@@ -1,0 +1,16 @@
+﻿District,number_of_grama_panchayat,total_no_grama_panchayat_wards,number_of_block_panchayats,total_no_block_panchayat_wards,number_of_district_panchayats,total_no_district_panchayat_wards,number_municipalities,total_number_municipality_wards,number_municipal_corporations,total_number_municipal_corporations,total_local_bodies,total_number_ward
+THIRUVANANTHAPURAM,73,1386,11,169,1,28,4,154,1,101,90,1838
+KOLLAM,68,1314,11,166,1,27,4,135,1,56,85,1698
+PATHANAMTHITTA,53,833,8,114,1,17,4,135,0,0,66,1099
+ALAPPUZHA,72,1253,12,170,1,24,6,219,0,0,91,1666
+KOTTAYAM,71,1223,11,157,1,23,6,208,0,0,89,1611
+IDUKKI,52,834,8,112,1,17,2,73,0,0,63,1036
+ERNAKULAM,82,1467,14,202,1,28,13,447,1,76,111,2220
+THRISSUR,86,1601,16,231,1,30,7,286,1,56,111,2204
+PALAKKAD,88,1636,13,200,1,31,7,249,0,0,109,2116
+MALAPPURAM,94,2001,15,250,1,33,12,505,0,0,122,2789
+KOZHIKODE,70,1343,12,183,1,28,7,273,1,76,91,1903
+WAYANAD,23,450,4,59,1,17,3,103,0,0,31,629
+KANNUR,71,1271,11,162,1,25,9,333,1,56,93,1847
+KASARGOD,38,725,6,92,1,18,3,120,0,0,48,955
+Total,941,17337,152,2267,14,346,87,3240,6,421,1200,23611
