@@ -144,10 +144,10 @@ Promise.all([
               ${p.elected_representative}<br>
 
               <strong>Party:</strong>
-              ${p.winning_party}<br>
+              ${p.winning_party} (${p.winning_party_full})<br>
 
               <strong>Front:</strong>
-              ${p.winning_front}<br>
+              ${p.winning_front} (${p.fron_full})<br>
 
               <strong>Election Year:</strong>
               ${2024}<br>
@@ -227,10 +227,10 @@ Promise.all([
               ${p.elected_representative}<br>
 
               <strong>Party:</strong>
-              ${p.winning_party}<br>
+              ${p.winning_party} (${p.winning_party_full})<br>
 
               <strong>Front:</strong>
-              ${p.winning_front}<br>
+              ${p.winning_front} (${p.winning_front_full})<br>
 
               <strong>Election Year:</strong>
               ${p.election_year || "2026"}<br>
