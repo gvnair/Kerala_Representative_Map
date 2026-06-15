@@ -1,2 +1,4 @@
 /MASTER_DATA
 /unclean_data.DS_Store
+.DS_Store
+*.gpkg
