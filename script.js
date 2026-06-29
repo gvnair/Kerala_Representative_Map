@@ -65,6 +65,7 @@ function highlightFeature(e) {
 let lsLayer;
 let acLayer;
 let districtLayer;
+let localBodyLayer;
 
 
 // =====================================================
