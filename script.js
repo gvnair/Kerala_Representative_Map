@@ -14,11 +14,11 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // ALLIANCE COLORS
 // =====================================================
 
-function getColor(winning_front) {
+function getAllianceColor(front) {
 
-  if (winning_front === "LDF") return "#e53935";
-  if (winning_front === "UDF") return "#1e88e5";
-  if (winning_front === "NDA") return "#fb8c00";
+  if (front === "LDF") return "#e53935";
+  if (front === "UDF") return "#1e88e5";
+  if (front === "NDA") return "#fb8c00";
 
   return "#9e9e9e";
 }
@@ -31,12 +31,13 @@ function getColor(winning_front) {
 function style(feature) {
 
   return {
-    fillColor: getColor(feature.properties.winning_front),
+    fillColor: getAllianceColor(feature.properties.winning_front),
     weight: 1,
     opacity: 1,
     color: "white",
     fillOpacity: 0.75
   };
+
 }
 
 
@@ -66,10 +67,97 @@ let lsLayer;
 let acLayer;
 let districtLayer;
 let lsgiLayer;
+let wardLayer = null;
 
 const lsgiLookup = {};
 
+const wardCache = {};
 
+const districtFiles = {
+
+    "Thiruvananthapuram": "thiruvananthapuram_wards_simplified.json",
+    "Kollam": "kollam_wards_simplified.json",
+    "Pathanamthitta": "pathanamthitta_wards_simplified.json",
+    "Alappuzha": "alappuzha_wards_simplified.json",
+    "Kottayam": "kottayam_wards_simplified.json",
+    "Idukki": "idukki_wards_simplified.json",
+    "Ernakulam": "ernakulam_wards_mapped_simplified.json",
+    "Thrissur": "thrissur_wards_simplified.json",
+    "Palakkad": "palakkad_wards_simplified.json",
+    "Malappuram": "malappuram_wards_simplified.json",
+    "Kozhikkode": "kozhikkode_wards_simplified.json",
+    "Wayanad": "wayanad_wards_simplified.json",
+    "Kannur": "kannur_wards_simplified.json",
+    "Kasaragod": "kasaragod_wards_simplified.json"
+
+};
+
+
+
+
+function switchToLayer(targetLayer) {
+
+    map.removeLayer(lsLayer);
+    map.removeLayer(acLayer);
+    map.removeLayer(districtLayer);
+    map.removeLayer(lsgiLayer);
+
+    map.addLayer(targetLayer);
+
+}
+
+async function loadWardLayer(district) {
+
+    // Remove the currently displayed ward layer
+    if (wardLayer) {
+        map.removeLayer(wardLayer);
+    }
+
+    const filename = districtFiles[district];
+
+    if (!filename) {
+        console.error("No ward file found for:", district);
+        return;
+    }
+
+    let wardData;
+
+    // ---------- CACHE ----------
+    if (wardCache[district]) {
+
+        console.log("Using cached ward layer:", district);
+
+        wardData = wardCache[district];
+
+    } else {
+
+        console.log("Downloading ward layer:", district);
+
+        const response = await fetch(
+            `data/kerala_lsgi/kerala_lsgi_district_ward_maps/${filename}`
+        );
+
+        wardData = await response.json();
+
+        wardCache[district] = wardData;
+
+    }
+
+    // ---------- DRAW LAYER ----------
+    wardLayer = L.geoJSON(wardData, {
+
+        style: {
+            color: "#666",
+            weight: 1,
+            fillColor: "#cccccc",
+            fillOpacity: 0.25
+        }
+
+    });
+
+    wardLayer.addTo(map);
+
+}
 // =====================================================
 // LOAD ALL DATA
 // =====================================================
@@ -133,6 +221,8 @@ console.log(lsgiLookup);
 
       feature.properties.search_label =
       `${p.ls_seat_name} (Lok Sabha)`;
+
+      feature.properties.layer_type = "loksabha";
 
 
       // Tooltip
@@ -213,6 +303,8 @@ console.log(lsgiLookup);
 
       feature.properties.search_label =
         `${p.Asmbly_Con} (Assembly)`;
+
+        feature.properties.layer_type = "assembly";
 
 
       // Tooltip
@@ -299,6 +391,8 @@ console.log(lsgiLookup);
       feature.properties.search_label =
         `${p.DISTRICT} (District)`;
 
+        feature.properties.layer_type = "district";
+
 
       layer.bindTooltip(
         p.DISTRICT,
@@ -333,12 +427,20 @@ console.log(lsgiLookup);
 
 lsgiLayer = L.geoJSON(lsgiData, {
 
-  style: {
-    color: "#444",
-    weight: 1,
-    fillColor: "#4CAF50",
-    fillOpacity: 0.5
-  },
+  style: function(feature) {
+
+    const info = lsgiLookup[feature.properties.sec_kerala_code];
+
+    return {
+        color: "#444",
+        weight: 1,
+        fillColor: info
+            ? getAllianceColor(info.majority_front)
+            : "#9e9e9e",
+        fillOpacity: 0.6
+    };
+
+},
 
   onEachFeature: function (feature, layer) {
 
@@ -346,9 +448,19 @@ lsgiLayer = L.geoJSON(lsgiData, {
 
     const info = lsgiLookup[p.sec_kerala_code];
 
+    if (info) {
+
+    feature.properties.name = info.lsgi_name;
+
+    feature.properties.search_label =
+        `${info.lsgi_name} (${info.lsgi_type})`;
+
+    feature.properties.layer_type = "lsgi";
+
+}
     // Tooltip
     layer.bindTooltip(
-      info ? info.lsgi_name : p.lsgd_name,
+      info ? info.lsgd_name : p.lsgd_name,
       {
         sticky: true,
         direction: "top",
@@ -364,6 +476,7 @@ lsgiLayer = L.geoJSON(lsgiData, {
       if (!info) {
         layer.bindPopup("<b>Information not found.</b>").openPopup();
         return;
+        loadWardLayer(info.district);
       }
 
       layer.bindPopup(`
@@ -495,8 +608,9 @@ map.removeLayer(lsgiLayer);
   const searchableLayers = L.layerGroup([
     lsLayer,
     acLayer,
-    districtLayer
-  ]);
+    districtLayer,
+    lsgiLayer
+]);
 
 
   const searchControl = new L.Control.Search({
@@ -522,60 +636,22 @@ map.removeLayer(lsgiLayer);
     const props = e.layer.feature.properties;
   
   
-    // =========================
-    // Switch to Lok Sabha Layer
-    // =========================
-  
-    if (props.ls_seat_name) {
-  
-      if (map.hasLayer(acLayer)) {
-        map.removeLayer(acLayer);
-      }
-  
-      if (map.hasLayer(districtLayer)) {
-        map.removeLayer(districtLayer);
-      }
-  
-      map.addLayer(lsLayer);
-    }
-  
-  
-    // =========================
-    // Switch to Assembly Layer
-    // =========================
-  
-    if (props.Asmbly_Con) {
-  
-      if (map.hasLayer(lsLayer)) {
-        map.removeLayer(lsLayer);
-      }
-  
-      if (map.hasLayer(districtLayer)) {
-        map.removeLayer(districtLayer);
-      }
-  
-      map.addLayer(acLayer);
-    }
-  
-  
-    // =========================
-    // Switch to District Layer
-    // =========================
-  
-    if (props.DISTRICT) {
-  
-      if (map.hasLayer(lsLayer)) {
-        map.removeLayer(lsLayer);
-      }
-  
-      if (map.hasLayer(acLayer)) {
-        map.removeLayer(acLayer);
-      }
-  
-      map.addLayer(districtLayer);
-    }
-  
-  
+    if (props.layer_type === "loksabha") {
+    switchToLayer(lsLayer);
+}
+
+if (props.layer_type === "assembly") {
+    switchToLayer(acLayer);
+}
+
+if (props.layer_type === "district") {
+    switchToLayer(districtLayer);
+}
+
+if (props.layer_type === "lsgi") {
+    switchToLayer(lsgiLayer);
+}
+
     // Highlight searched feature
   
     if (e.layer.setStyle) {
@@ -585,9 +661,10 @@ map.removeLayer(lsgiLayer);
         color: '#000',
         fillOpacity: 1
       });
+
     }
-  
-  
+
+
     // Open popup if available
   
     if (e.layer.openPopup) {
