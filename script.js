@@ -65,7 +65,9 @@ function highlightFeature(e) {
 let lsLayer;
 let acLayer;
 let districtLayer;
-let localBodyLayer;
+let lsgiLayer;
+
+const lsgiLookup = {};
 
 
 // =====================================================
@@ -74,20 +76,44 @@ let localBodyLayer;
 
 Promise.all([
 
-  fetch('data/kerala_loksabha_mapped.geojson')
+  fetch('data/kerala_loksabha/kerala_loksabha_mapped.geojson')
     .then(res => res.json()),
 
-  fetch('data/kerala_stateassembly_2026_mapped.geojson')
+  fetch('data/kerala_stateassembly/kerala_stateassembly_2026_mapped.geojson')
     .then(res => res.json()),
 
   fetch('data/kerala_district.geojson')
-    .then(res => res.json())
+    .then(res => res.json()),
+  
+  fetch('data/kerala_lsgi/kerala_lsgi_boundary_layer.geojson')
+    .then(r => r.json()),
+
+  fetch("data/kerala_lsgi/kerala_lsgi_summary_2025.csv").then(r=>r.text())
 
 ])
 
-.then(([lsData, acData, districtData]) => {
+.then(([lsData, acData, districtData, lsgiData, lsgiSummaryCsv]) => {
 
+  // Parse the LSGI summary CSV
+const lines = lsgiSummaryCsv.trim().split("\n");
 
+const headers = lines[0].split(",");
+
+lines.slice(1).forEach(line => {
+
+    const values = line.split(",");
+
+    const row = {};
+
+    headers.forEach((header, index) => {
+        row[header.trim()] = values[index]?.trim();
+    });
+
+    lsgiLookup[row.sec_kerala_code] = row;
+
+});
+
+console.log(lsgiLookup);
 
   // =====================================================
   // LOK SABHA LAYER
@@ -301,6 +327,89 @@ Promise.all([
     }
   });
 
+  // =====================================================
+// LSGI LAYER
+// =====================================================
+
+lsgiLayer = L.geoJSON(lsgiData, {
+
+  style: {
+    color: "#444",
+    weight: 1,
+    fillColor: "#4CAF50",
+    fillOpacity: 0.5
+  },
+
+  onEachFeature: function (feature, layer) {
+
+    const p = feature.properties;
+
+    const info = lsgiLookup[p.sec_kerala_code];
+
+    // Tooltip
+    layer.bindTooltip(
+      info ? info.lsgi_name : p.lsgd_name,
+      {
+        sticky: true,
+        direction: "top",
+        className: "constituency-label"
+      }
+    );
+
+    // Popup
+    layer.on("click", function () {
+
+      const info = lsgiLookup[p.sec_kerala_code];
+
+      if (!info) {
+        layer.bindPopup("<b>Information not found.</b>").openPopup();
+        return;
+      }
+
+      layer.bindPopup(`
+        <div style="font-size:14px;">
+
+          <strong style="font-size:16px;">
+            ${info.lsgd_name}
+          </strong>
+
+          <br><br>
+
+          <strong>Type:</strong>
+          ${info.lsgd_type}<br>
+
+          <strong>District:</strong>
+          ${info.district}<br>
+
+          <strong>Total Wards:</strong>
+          ${info.number_of_wards}<br>
+
+          <hr>
+
+          <strong>Majority Front:</strong>
+          ${info.majority_front}<br>
+
+          <strong>Largest Front:</strong>
+          ${info.largest_front}<br>
+
+          <strong>Majority:</strong>
+          ${info.majority_number}<br>
+
+          <hr>
+
+          <strong>LDF:</strong> ${info.LDF}<br>
+          <strong>UDF:</strong> ${info.UDF}<br>
+          <strong>NDA:</strong> ${info.NDA}<br>
+          <strong>OTH:</strong> ${info.OTH}
+
+        </div>
+      `).openPopup();
+
+    });
+
+  }
+
+});
 // =====================================================
 // DEFAULT LAYER
 // =====================================================
@@ -313,6 +422,7 @@ map.fitBounds(lsLayer.getBounds());
 // Ensure only LS layer loads initially
 map.removeLayer(acLayer);
 map.removeLayer(districtLayer);
+map.removeLayer(lsgiLayer);
 
   // =====================================================
   // TOGGLE CONTROL
@@ -321,7 +431,8 @@ map.removeLayer(districtLayer);
   const baseMaps = {
     "Lok Sabha": lsLayer,
     "State Assembly": acLayer,
-    "Districts": districtLayer
+    "Districts": districtLayer,
+    "Local Bodies": lsgiLayer
   };
 
 
@@ -486,8 +597,7 @@ map.removeLayer(districtLayer);
   });
 
 
-  map.addControl(searchControl);
+ map.addControl(searchControl);
 
 })
-
 .catch(err => console.error(err));
