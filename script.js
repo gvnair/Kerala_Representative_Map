@@ -74,13 +74,13 @@ let localBodyLayer;
 
 Promise.all([
 
-  fetch('data/loksabha_kerala_mapped.geojson')
+  fetch('data/kerala_loksabha_mapped.geojson')
     .then(res => res.json()),
 
-  fetch('data/stateassembly_2026_mapped.geojson')
+  fetch('data/kerala_stateassembly_2026_mapped.geojson')
     .then(res => res.json()),
 
-  fetch('data/district.geojson')
+  fetch('data/kerala_district.geojson')
     .then(res => res.json())
 
 ])
