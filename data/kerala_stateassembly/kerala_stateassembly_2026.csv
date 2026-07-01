@@ -1,0 +1,141 @@
+state,district,Asmbly_Con,Prlmnt_Con,Area(sqkm),lac_code_unique_id,lac_code,elected_representative,winning_party,winning_party_full,winning_front,winning_front_full
+KERALA,KASARAGOD,Manjeshwaram,KASARAGOD,378.647593341585,lac_1,1,AKM Ashraf,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KASARAGOD,Kasaragod,KASARAGOD,276.585441358586,lac_2,2,Kallatra Mahin,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KASARAGOD,Udma,KASARAGOD,460.272230413706,lac_3,3,Neelakandan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KASARAGOD,Kanhangad,KASARAGOD,529.29495558839,lac_4,4,Adv Govindan Pallikappil,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,KASARAGOD,Trikaripur,KASARAGOD,329.9546804163,lac_5,5,Sandeep Varier,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KANNUR,Payyannur,KASARAGOD,372.96942756563,lac_6,6,V Kunhikrishnan,IND-UDF,Independent - United Democratic Front,UDF,United Democratic Front
+KERALA,KANNUR,Irikkur,KANNUR,592.515528569804,lac_9,9,Adv Sajeev Joseph,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KANNUR,Taliparamba,KANNUR,296.117459779923,lac_8,8,TK Govindan Master s/o Kunhikkannan Nambiar,IND,Independent,UDF,United Democratic Front
+KERALA,KANNUR,Kalliasseri,KASARAGOD,209.036891935381,lac_7,7,M Vijin,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,KANNUR,Peravoor,KANNUR,535.629867593399,lac_16,16,Adv Sunny Joseph,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KANNUR,Mattannur,KANNUR,346.111869687876,lac_15,15,VK Sanoj,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,KANNUR,Azhikode,KANNUR,79.4032273851357,lac_10,10,KV Sumesh,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,WAYANAD,Mananthavady (ST),WAYANAD,747.316036030245,lac_17,17,Usha Vijayan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KANNUR,Kannur,KANNUR,85.0142822195439,lac_11,11,Adv TO Mohanan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KANNUR,Dharmadam,KANNUR,130.924972875874,lac_12,12,Pinarayi Vijayan,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,KANNUR,Kuthuparamba,VADAKARA,241.121546541791,lac_14,14,PK Praveen,RJD,Rashtriya Janata Dal,LDF,Left Democratic Front
+KERALA,WAYANAD,Sulthanbathery (ST),WAYANAD,764.51824653475,lac_18,18,IC Balakrishnan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KANNUR,Thalassery,VADAKARA,72.3014751437188,lac_13,13,Karayi Rajan,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,KOZHIKODE,Nadapuram,VADAKARA,333.472963859108,lac_22,22,KM Abhijith,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,WAYANAD,Kalpetta,WAYANAD,622.084039354662,lac_19,19,Adv T Siddique,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOZHIKODE,Vadakara,VADAKARA,73.3774916035514,lac_20,20,KK Rema,RMPI,Revolutionary Marxist Party of India,UDF,United Democratic Front
+KERALA,KOZHIKODE,Kuttiadi,VADAKARA,168.579774249988,lac_21,21,Parakkal Abdulla,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KOZHIKODE,Perambra,VADAKARA,293.465763880391,lac_24,24,Adv Fathima Thahiliya,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KOZHIKODE,Balusseri (SC),KOZHIKODE,339.683007773777,lac_25,25,VT Sooraj,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOZHIKODE,Quilandy,VADAKARA,105.042694064593,lac_23,23,Adv K Praveen Kumar,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOZHIKODE,Koduvally,KOZHIKODE,178.864913640469,lac_31,31,PK Firos,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KOZHIKODE,Thiruvambadi,WAYANAD,424.854067189132,lac_32,32,CK Kasim,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Nilambur,WAYANAD,919.258390039705,lac_35,35,Aryadan Shoukath,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOZHIKODE,Elathur,KOZHIKODE,135.084524788139,lac_26,26,Adv Vidya Balakrishnan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,MALAPPURAM,Ernad,WAYANAD,299.259890657364,lac_34,34,PK Basheer,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KOZHIKODE,Kunnamangalam,KOZHIKODE,148.018755805405,lac_30,30,MA Razak Master,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,KOZHIKODE,Kozhikode North,KOZHIKODE,57.7668292272667,lac_27,27,Adv K Jayanth,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOZHIKODE,Kozhikode South,KOZHIKODE,27.9164431277069,lac_28,28,Adv Fyzal Babu,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Kondotty,MALAPPURAM,162.046075315076,lac_33,33,TP Ashrafali,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Wandoor (SC),WAYANAD,370.105205399967,lac_36,36,AP Anilkumar,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOZHIKODE,Beypore,KOZHIKODE,58.3481950361096,lac_29,29,PA Mohamed Riyas,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PALAKKAD,Mannarkkad,PALAKKAD,1068.74381884557,lac_54,54,Adv N Samsudheen,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Manjeri,MALAPPURAM,253.611524193965,lac_37,37,Adv M Rahmathulla,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Malappuram,MALAPPURAM,173.586125793912,lac_40,40,PK Kunhalikutty,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Vallikunnu,MALAPPURAM,124.579989429536,lac_42,42,TV Ibrahim,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Vengara,MALAPPURAM,115.274821882116,lac_41,41,KM Shaji,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Tirurangadi,PONNANI,92.6409542836522,lac_43,43,PMA Sameer,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Mankada,MALAPPURAM,189.081179627552,lac_39,39,Manjalamkuzhi Ali,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Perinthalmanna,MALAPPURAM,218.208531373772,lac_38,38,Najeeb Kanthapuram,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Kottakkal,PONNANI,180.81761405815,lac_46,46,Prof Abid Hussain Thangal,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,MALAPPURAM,Tanur,PONNANI,82.4895275573471,lac_44,44,PK Navas,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,PALAKKAD,Kongad(SC),PALAKKAD,222.02132725966,lac_53,53,Thulasi Teacher,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,MALAPPURAM,Tirur,PONNANI,123.18321971875,lac_45,45,Kurukkoli Moideen,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,PALAKKAD,Ottappalam,PALAKKAD,274.424335480739,lac_52,52,Adv K Premkumar,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PALAKKAD,Shornur,PALAKKAD,234.096132459615,lac_51,51,P Mammikutty,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PALAKKAD,Pattambi,PALAKKAD,179.474992287726,lac_50,50,Muhammed Muhassin,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,PALAKKAD,Malampuzha,PALAKKAD,478.011677049331,lac_55,55,A Prabhakaran,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,MALAPPURAM,Thavanur,PONNANI,136.252544846383,lac_47,47,Adv VS Joy,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,PALAKKAD,Thrithala,PONNANI,192.86361549159,lac_49,49,VT Balram,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,MALAPPURAM,Ponnani,PONNANI,114.754553718173,lac_48,48,KP Noushad Ali,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,PALAKKAD,Chittur,ALATHUR (SC),315.905730980268,lac_58,58,Adv Sumesh Achuthan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,PALAKKAD,Palakkad,PALAKKAD,91.9211778234941,lac_56,56,Ramesh Pisharody,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THRISSUR,Chelakkara (SC),ALATHUR (SC),362.410844645723,lac_61,61,UR Pradeep,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PALAKKAD,Tarur (SC),ALATHUR (SC),238.702115890523,lac_57,57,Sumod,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THRISSUR,Kunnamkulam,ALATHUR (SC),187.447616107822,lac_62,62,AC Moideen,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PALAKKAD,Alathur,ALATHUR (SC),308.277085249765,lac_60,60,TM Sasi,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THRISSUR,Guruvayoor,THRISSUR,114.438518467923,lac_63,63,NK Akbar,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THRISSUR,Wadakkanchery,ALATHUR (SC),206.452434729044,lac_65,65,Xavier Chittilappilly,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PALAKKAD,Nemmara,ALATHUR (SC),869.580744918672,lac_59,59,K Preman,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THRISSUR,Manalur,THRISSUR,167.167978543832,lac_64,64,Prof C Ravindranath,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THRISSUR,Ollur,THRISSUR,320.013409654381,lac_66,66,K Rajan,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,THRISSUR,Thrissur,THRISSUR,75.7453959329755,lac_67,67,Rajan J Pallan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THRISSUR,Nattika(SC),THRISSUR,136.643637918421,lac_68,68,Geethagopi,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,THRISSUR,Puthukkad,THRISSUR,361.65401871176,lac_71,71,KK Ramachandran,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THRISSUR,Chalakudy,CHALAKUDY,653.769973017214,lac_72,72,Saneeshkumar Joseph,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THRISSUR,Irinjalakuda,THRISSUR,177.56458901417,lac_70,70,Adv Thomas Unniyadan,KEC,Kerala Congress,UDF,United Democratic Front
+KERALA,THRISSUR,Kaipamangalam,CHALAKUDY,94.6947109281591,lac_69,69,KK Valsaraj,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,IDUKKI,Devikulam (SC),IDUKKI,1251.56442467816,lac_88,88,F Raja,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THRISSUR,Kodungallur,CHALAKUDY,168.498510893984,lac_73,73,Adv OJ Janeesh,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Angamaly,CHALAKUDY,417.768163530844,lac_75,75,Roji M John,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Paravur,ERNAKULAM,110.732189950447,lac_78,78,Adv VD Satheesan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Vypeen,ERNAKULAM,97.022911521941,lac_79,79,Tony Chammany,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Aluva,CHALAKUDY,124.468322706078,lac_76,76,Anwar Sadath,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Perumbavoor,CHALAKUDY,228.123536112539,lac_74,74,Manoj Moothedan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Kalamassery,ERNAKULAM,117.834760584703,lac_77,77,Adv VE Abdul Gafoor,IUML,Indian Union Muslim League,UDF,United Democratic Front
+KERALA,ERNAKULAM,Kunnathunad (SC),CHALAKUDY,238.052246327253,lac_84,84,VP Sajeendran,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Ernakulam,ERNAKULAM,27.7739789202995,lac_82,82,TJ Vinod,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Muvattupuzha,IDUKKI,285.404970289028,lac_86,86,Dr Mathew Kuzhalnadan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Thrikkakara,ERNAKULAM,51.4632115731069,lac_83,83,Uma Thomas,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,IDUKKI,Thodupuzha,IDUKKI,595.923706048482,lac_90,90,Apu John Joseph,KEC,Kerala Congress,UDF,United Democratic Front
+KERALA,IDUKKI,Udumbanchola,IDUKKI,510.48896565575,lac_89,89,Adv Senapathy Venu,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Thripunithura,ERNAKULAM,77.9712858132666,lac_81,81,Deepak Joy,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Piravom,KOTTAYAM,286.252198470684,lac_85,85,Anoop Jacob,KC(J),Kerala Congress (Jacob),UDF,United Democratic Front
+KERALA,ERNAKULAM,Kochi,ERNAKULAM,75.8676086199161,lac_80,80,Mohammed Shiyas,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,IDUKKI,Idukki,IDUKKI,653.556873780154,lac_91,91,Roy K Paulose,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Aroor,ALAPPUZHA,155.42152414423,lac_102,102,Adv Shanimol Osman,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Kaduthuruthy,KOTTAYAM,291.107714247371,lac_94,94,Adv Mons Joseph,KEC,Kerala Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Vaikom (SC),KOTTAYAM,197.153770335727,lac_95,95,K Binimon,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Pala,KOTTAYAM,403.66542996862,lac_93,93,Mani C Kappen,KDP,Kerala Democratic Party,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Cherthala,ALAPPUZHA,153.500246546804,lac_103,103,P Prasad,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,IDUKKI,Peerumade,IDUKKI,1338.66622701158,lac_92,92,Adv Cyriac Thomas,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Poonjar,PATHANAMTHITTA,402.784031671107,lac_101,101,Adv Sebastian MJ,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Ettumanoor,KOTTAYAM,202.718626282614,lac_96,96,Nattakom Suresh,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Puthuppally,KOTTAYAM,199.566069153511,lac_98,98,Adv Chandy Oommen,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Alappuzha,ALAPPUZHA,112.472172948546,lac_104,104,AD Thomas,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Kottayam,KOTTAYAM,109.791105692615,lac_97,97,Thiruvanchoor Radhakrishnan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Kanjirappally,PATHANAMTHITTA,293.904807227763,lac_100,100,Rony K Baby,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Kuttanad,MAVELIKKARA (SC),316.718119555858,lac_106,106,Reji Cheriyan,KEC,Kerala Congress,UDF,United Democratic Front
+KERALA,KOTTAYAM,Changanassery,MAVELIKKARA (SC),108.112920357789,lac_99,99,Vinu Job Kuzhimannil,KEC,Kerala Congress,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Ambalappuzha,ALAPPUZHA,83.12854107499,lac_105,105,G Sudhakaran,IND-UDF,Independent - United Democratic Front,UDF,United Democratic Front
+KERALA,PATHANAMTHITTA,Thiruvalla,PATHANAMTHITTA,193.589374497217,lac_111,111,Adv Varghese Mammen,KEC,Kerala Congress,UDF,United Democratic Front
+KERALA,PATHANAMTHITTA,Konni,PATHANAMTHITTA,1586.62762043379,lac_114,114,Adv KU Jenish Kumar,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,PATHANAMTHITTA,Ranni,PATHANAMTHITTA,444.365988461515,lac_112,112,Adv Pazhakulam Madhu,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,PATHANAMTHITTA,Aranmula,PATHANAMTHITTA,235.561683103506,lac_113,113,Abin Varkey Kodiyattu,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Haripad,ALAPPUZHA,144.659673681064,lac_107,107,Ramesh Chennithala,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ALAPPUZHA,Chengannur,MAVELIKKARA (SC),165.758368310615,lac_110,110,Saji Cherian,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,ALAPPUZHA,Mavelikkara (SC),MAVELIKKARA (SC),159.10611818318,lac_109,109,MS Arun Kumar,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,ALAPPUZHA,Kayamkulam,ALAPPUZHA,122.791324280268,lac_108,108,Adv M Liju,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,PATHANAMTHITTA,Adoor (SC),PATHANAMTHITTA,210.541005399611,lac_115,115,Advocate CV Santhakumar,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOLLAM,Pathanapuram,MAVELIKKARA (SC),312.361783910336,lac_120,120,Jyothi Kumar Chamakkala,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOLLAM,Karunagappally,ALAPPUZHA,108.726264602432,lac_116,116,CR Mahesh,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOLLAM,Kunnathur (SC),MAVELIKKARA (SC),183.68615564905,lac_118,118,Ullas Kovur,RSP,Revolutionary Socialist Party,UDF,United Democratic Front
+KERALA,KOLLAM,Punalur,KOLLAM,902.223422366974,lac_121,121,C Ajayaprasad,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,KOLLAM,Kottarakkara,MAVELIKKARA (SC),209.760264952955,lac_119,119,KN Balagopal,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,KOLLAM,Chavara,KOLLAM,78.5829076571863,lac_117,117,Shibu Baby John,RSP,Revolutionary Socialist Party,UDF,United Democratic Front
+KERALA,KOLLAM,Kundara,KOLLAM,119.458146727003,lac_123,123,PC Vishnunadh,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOLLAM,Kollam,KOLLAM,61.1679582031703,lac_124,124,Adv Bindhu Krishna,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOLLAM,Chadayamangalam,KOLLAM,316.602886237221,lac_122,122,MM Naseer,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,KOLLAM,Eravipuram,KOLLAM,44.9574510315069,lac_125,125,Adv Vishnu Mohan,RSP,Revolutionary Socialist Party,UDF,United Democratic Front
+KERALA,KOLLAM,Chathannoor,KOLLAM,141.831726406626,lac_126,126,BB Gopakumar,BJP,Bharatiya Janata Party,NDA,National Democratic Alliance
+KERALA,THIRUVANANTHAPURAM,Varkala,ATTINGAL,130.592350773173,lac_127,127,Adv V Joy,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THIRUVANANTHAPURAM,Vamanapuram,ATTINGAL,446.828477210181,lac_131,131,Muhammed Sudheersha S,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THIRUVANANTHAPURAM,Attingal (SC),ATTINGAL,180.01089773123,lac_128,128,OS Ambika,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THIRUVANANTHAPURAM,Chirayinkeezhu,ATTINGAL,114.4141896229,lac_129,129,Ramya Haridas,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THIRUVANANTHAPURAM,Aruvikkara,ATTINGAL,375.640071356349,lac_136,136,Adv G Steephen,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THIRUVANANTHAPURAM,Nedumangad,ATTINGAL,144.107599004402,lac_130,130,GR Anil,CPI,Communist Party of India,LDF,Left Democratic Front
+KERALA,THIRUVANANTHAPURAM,Kazhakoottam,THIRUVANANTHAPURA,86.4850955763704,lac_132,132,V Muraleedharan,BJP,Bharatiya Janata Party,NDA,National Democratic Alliance
+KERALA,THIRUVANANTHAPURAM,Parassala,THIRUVANANTHAPURA,306.849323930163,lac_137,137,CK Hareendran,CPI(M),Communist Party of India (Marxist),LDF,Left Democratic Front
+KERALA,THIRUVANANTHAPURAM,Vattiyoorkavu(SC),THIRUVANANTHAPURA,33.7485692299217,lac_133,133,K Muraleedharan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THIRUVANANTHAPURAM,Kattakkada,ATTINGAL,113.513189973705,lac_138,138,MR Baiju,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THIRUVANANTHAPURAM,Thiruvananthapura,THIRUVANANTHAPURA,40.2526791479217,lac_134,134,CP John,CMPKSC,Communist Marxist Party Kerala State Committee,UDF,United Democratic Front
+KERALA,THIRUVANANTHAPURAM,Nemom,THIRUVANANTHAPURA,36.992450321281,lac_135,135,Rajeev Chandrasekhar,BJP,Bharatiya Janata Party,NDA,National Democratic Alliance
+KERALA,THIRUVANANTHAPURAM,Neyyattinkara,THIRUVANANTHAPURA,93.633911723412,lac_140,140,N Shakthan,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,THIRUVANANTHAPURAM,Kovalam,THIRUVANANTHAPURA,86.4339212286393,lac_139,139,Adv M Vincent,INC,Indian National Congress,UDF,United Democratic Front
+KERALA,ERNAKULAM,Kothamangalam,IDUKKI,912.001036821791,lac_87,87,Shibu Theckumpuram,KEC,Kerala Congress,UDF,United Democratic Front

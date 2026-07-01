@@ -1,4 +1,4 @@
-unique_id,ls_seat,ls_seat_number,ls_reservation,state,elected_representative,winning_party_full,winning_party,electors,votes,turnout_percentage,margin,margin_percentage,front,fron_full
+unique_id,ls_seat,ls_seat_number,ls_reservation,state,elected_representative,winning_party_full,winning_party,electors,votes,turnout_percentage,margin,margin_percentage,front,front_full
 S11_15,Alappuzha,"15",GEN,Kerala,K. C Venugopal,Indian National Congress,INC,"1400082","1058703",75.60%,"63513",6.00%,UDF,United Democratic Front
 S11_9,Alathur,"9",SC,Kerala,K.Radhakrishnan,Communist Party Of India (Marxist),CPI(M),"1337496","992268",74.20%,"20111",2.00%,LDF,Left Democratic Front
 S11_19,Attingal,"19",GEN,Kerala,Adv Adoor Prakash,Indian National Congress,INC,"1396807","985341",70.50%,"684",0.10%,UDF,United Democratic Front

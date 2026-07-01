@@ -106,7 +106,7 @@ function switchToLayer(targetLayer) {
 
 }
 
-async function loadWardLayer(district) {
+async function loadWardLayer(district, secKeralaCode) {
 
     // Remove the currently displayed ward layer
     if (wardLayer) {
@@ -145,7 +145,13 @@ async function loadWardLayer(district) {
 
     // ---------- DRAW LAYER ----------
     wardLayer = L.geoJSON(wardData, {
+      filter: function(feature) {
 
+        console.log(feature.properties.joinkey_for_shapefile_lsgi_code);
+        console.log(secKeralaCode);
+          return feature.properties.joinkey_for_shapefile_lsgi_code === secKeralaCode;
+
+        },
         style: {
             color: "#666",
             weight: 1,
@@ -156,6 +162,11 @@ async function loadWardLayer(district) {
     });
 
     wardLayer.addTo(map);
+    if (wardLayer.getBounds().isValid()) {
+    map.fitBounds(wardLayer.getBounds(), {
+        padding: [30, 30]
+    });
+}
 
 }
 // =====================================================
@@ -450,12 +461,12 @@ lsgiLayer = L.geoJSON(lsgiData, {
 
     if (info) {
 
-    feature.properties.name = info.lsgi_name;
+    feature.properties.name = info.lsgd_name;
 
     feature.properties.search_label =
-        `${info.lsgi_name} (${info.lsgi_type})`;
+        `${info.lsgd_name} (${info.lsgd_type})`;
 
-    feature.properties.layer_type = "lsgi";
+    feature.properties.layer_type = "lsgd";
 
 }
     // Tooltip
@@ -469,60 +480,65 @@ lsgiLayer = L.geoJSON(lsgiData, {
     );
 
     // Popup
-    layer.on("click", function () {
+layer.on("click", function () {
 
-      const info = lsgiLookup[p.sec_kerala_code];
+    const info = lsgiLookup[p.sec_kerala_code];
 
-      if (!info) {
+    if (!info) {
         layer.bindPopup("<b>Information not found.</b>").openPopup();
         return;
-        loadWardLayer(info.district);
-      }
+    }
 
-      layer.bindPopup(`
+    console.log(info);
+
+    loadWardLayer(
+        info.district,
+        info.sec_kerala_code
+    );
+
+    layer.bindPopup(`
         <div style="font-size:14px;">
 
-          <strong style="font-size:16px;">
-            ${info.lsgd_name}
-          </strong>
+            <strong style="font-size:16px;">
+                ${info.lsgd_name}
+            </strong>
 
-          <br><br>
+            <br><br>
 
-          <strong>Type:</strong>
-          ${info.lsgd_type}<br>
+            <strong>Type:</strong>
+            ${info.lsgd_type}<br>
 
-          <strong>District:</strong>
-          ${info.district}<br>
+            <strong>District:</strong>
+            ${info.district}<br>
 
-          <strong>Total Wards:</strong>
-          ${info.number_of_wards}<br>
+            <strong>Total Wards:</strong>
+            ${info.number_of_wards}<br>
 
-          <hr>
+            <hr>
 
-          <strong>Majority Front:</strong>
-          ${info.majority_front}<br>
+            <strong>Majority Front:</strong>
+            ${info.majority_front}<br>
 
-          <strong>Largest Front:</strong>
-          ${info.largest_front}<br>
+            <strong>Largest Front:</strong>
+            ${info.largest_front}<br>
 
-          <strong>Majority:</strong>
-          ${info.majority_number}<br>
+            <strong>Majority:</strong>
+            ${info.majority_number}<br>
 
-          <hr>
+            <hr>
 
-          <strong>LDF:</strong> ${info.LDF}<br>
-          <strong>UDF:</strong> ${info.UDF}<br>
-          <strong>NDA:</strong> ${info.NDA}<br>
-          <strong>OTH:</strong> ${info.OTH}
+            <strong>LDF:</strong> ${info.LDF}<br>
+            <strong>UDF:</strong> ${info.UDF}<br>
+            <strong>NDA:</strong> ${info.NDA}<br>
+            <strong>OTH:</strong> ${info.OTH}
 
         </div>
-      `).openPopup();
-
+    `).openPopup();
     });
 
-  }
+  }   // closes onEachFeature
 
-});
+});    // closes L.geoJSON
 // =====================================================
 // DEFAULT LAYER
 // =====================================================
