@@ -1,0 +1,230 @@
+[
+  {
+    "winning_party": "CPI(M)",
+    "winning_party_full": "Communist Party of India (Marxist)",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "CPI",
+    "winning_party_full": "Communist Party of India",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "KC(M)",
+    "winning_party_full": "Kerala Congress (Mani)",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "NCP",
+    "winning_party_full": "Nationalist Congress Party",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "RJD",
+    "winning_party_full": " Rashtriya Janata Dal",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "PDP",
+    "winning_party_full": "Peoples Democratic Party",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "NSC",
+    "winning_party_full": "National Secular Conference",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "KC(B)",
+    "winning_party_full": "Kerala Congress (B)",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "RJD",
+    "winning_party_full": " Rashtriya Janata Dal",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "INL",
+    "winning_party_full": "Indian National League",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "ISJD",
+    "winning_party_full": "Indian Socialist Janata Dal",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "JKC",
+    "winning_party_full": "Janadhipathya Kerala Congress",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "CON(S)",
+    "winning_party_full": "Congress (Secular)",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "JD(S)",
+    "winning_party_full": "Janata Dal (Secular)",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "AIFB",
+    "winning_party_full": "All India Forward Bloc",
+    "front": "LDF",
+    "front_full": "Left Democratic Front"
+  },
+  {
+    "winning_party": "INC",
+    "winning_party_full": "Indian National Congress",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "IUML",
+    "winning_party_full": "Indian Union Muslim League",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "KC(J)",
+    "winning_party_full": "Kerala Congress (Jacob)",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "KC(Jacob)",
+    "winning_party_full": "Kerala Congress (Jacob)",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "INL",
+    "winning_party_full": "Indian National League",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "RMPI",
+    "winning_party_full": "Revolutionary Marxist Party of India",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "KEC",
+    "winning_party_full": "Kerala Congress",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "KDP",
+    "winning_party_full": "Kerala Democratic Party",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "JSS",
+    "winning_party_full": "Janathipathya Samrakshana Samiti",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "AITC",
+    "winning_party_full": "All India Trinamool Congress",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "CMPCC(CMJ)",
+    "winning_party_full": "Communist Marxist Party (John)",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "BNJD",
+    "winning_party_full": "Bharathiya National Janata Dal",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "RSP",
+    "winning_party_full": "Revolutionary Socialist Party",
+    "front": "UDF",
+    "front_full": "United Democratic Front"
+  },
+  {
+    "winning_party": "BJP",
+    "winning_party_full": "Bharatiya Janata Party",
+    "front": "NDA",
+    "front_full": "National Democratic Alliance"
+  },
+  {
+    "winning_party": "BDJS",
+    "winning_party_full": "Bharath Dharma Jana Sena",
+    "front": "NDA",
+    "front_full": "National Democratic Alliance"
+  },
+  {
+    "winning_party": "LJP",
+    "winning_party_full": " Lok Janshakti Party",
+    "front": "NDA",
+    "front_full": "National Democratic Alliance"
+  },
+  {
+    "winning_party": "BDJS",
+    "winning_party_full": " Bharath Dharma Jana Sena",
+    "front": "NDA",
+    "front_full": "National Democratic Alliance"
+  },
+  {
+    "winning_party": "T20",
+    "winning_party_full": "Twenty20",
+    "front": "NDA",
+    "front_full": "National Democratic Alliance"
+  },
+  {
+    "winning_party": "AAP",
+    "winning_party_full": " Aam Aadmi Party",
+    "front": "IND",
+    "front_full": "Independent"
+  },
+  {
+    "winning_party": "WPI",
+    "winning_party_full": " Welfare Party of India",
+    "front": "IND",
+    "front_full": "Independent"
+  },
+  {
+    "winning_party": "BSP",
+    "winning_party_full": " Bahujan Samaj Party",
+    "front": "IND",
+    "front_full": "Independent"
+  },
+  {
+    "winning_party": "SDPI",
+    "winning_party_full": "Social Democratic Party of India",
+    "front": "IND",
+    "front_full": "Independent"
+  },
+  {
+    "winning_party": "SP",
+    "winning_party_full": "Samajwadi Party",
+    "front": "IND",
+    "front_full": "Independent"
+  }
+]
