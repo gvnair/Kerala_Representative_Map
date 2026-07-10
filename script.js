@@ -66,45 +66,81 @@ function highlightFeature(e) {
 let lsLayer;
 let acLayer;
 let districtLayer;
-let lsgiLayer;
+let localBodyLayer = null;
+
+const localBodyCache = {};
+function getDistrictFile(district) {
+    return district.toLowerCase().replace(/\s+/g, "_") + ".geojson";
+}
 let wardLayer = null;
 
-const lsgiLookup = {};
 
 const wardCache = {};
-
-const districtFiles = {
-
-    "Thiruvananthapuram": "thiruvananthapuram_wards_simplified.json",
-    "Kollam": "kollam_wards_simplified.json",
-    "Pathanamthitta": "pathanamthitta_wards_simplified.json",
-    "Alappuzha": "alappuzha_wards_simplified.json",
-    "Kottayam": "kottayam_wards_simplified.json",
-    "Idukki": "idukki_wards_simplified.json",
-    "Ernakulam": "ernakulam_wards_mapped_simplified.json",
-    "Thrissur": "thrissur_wards_simplified.json",
-    "Palakkad": "palakkad_wards_simplified.json",
-    "Malappuram": "malappuram_wards_simplified.json",
-    "Kozhikkode": "kozhikkode_wards_simplified.json",
-    "Wayanad": "wayanad_wards_simplified.json",
-    "Kannur": "kannur_wards_simplified.json",
-    "Kasaragod": "kasaragod_wards_simplified.json"
-
-};
-
 
 
 
 function switchToLayer(targetLayer) {
 
-    map.removeLayer(lsLayer);
-    map.removeLayer(acLayer);
-    map.removeLayer(districtLayer);
-    map.removeLayer(lsgiLayer);
+    if (lsLayer && map.hasLayer(lsLayer)) map.removeLayer(lsLayer);
+    if (acLayer && map.hasLayer(acLayer)) map.removeLayer(acLayer);
+    if (districtLayer && map.hasLayer(districtLayer)) map.removeLayer(districtLayer);
+    if (localBodyLayer && map.hasLayer(localBodyLayer)) map.removeLayer(localBodyLayer);
 
     map.addLayer(targetLayer);
+}
+
+// =====================================================
+// LOCAL BODY LOADER
+// =====================================================
+
+async function loadLocalBodies(district) {
+
+    // Remove previous district's local bodies
+    if (localBodyLayer) {
+        map.removeLayer(localBodyLayer);
+    }
+
+    const filename = getDistrictFile(district);
+
+    // Already created?
+    if (localBodyCache[district]) {
+
+        localBodyLayer = localBodyCache[district];
+        localBodyLayer.addTo(map);
+
+        console.log(`Using cached local bodies: ${district}`);
+
+        return;
+    }
+
+    console.log(`Downloading local bodies: ${district}`);
+
+    const response = await fetch(
+        `data/kerala_lsgi/local_bodies/${filename}`
+    );
+
+    const geojson = await response.json();
+
+    localBodyLayer = L.geoJSON(geojson, {
+
+        style: {
+            color: "#555",
+            weight: 1,
+            fillColor: "#cccccc",
+            fillOpacity: 0.5
+        }
+
+    });
+
+    localBodyCache[district] = localBodyLayer;
+
+    localBodyLayer.addTo(map);
 
 }
+
+// =====================================================
+// WARD LOADER
+// =====================================================
 
 async function loadWardLayer(district, secKeralaCode) {
 
@@ -113,12 +149,7 @@ async function loadWardLayer(district, secKeralaCode) {
         map.removeLayer(wardLayer);
     }
 
-    const filename = districtFiles[district];
-
-    if (!filename) {
-        console.error("No ward file found for:", district);
-        return;
-    }
+    const filename = getDistrictFile(district);
 
     let wardData;
 
@@ -134,7 +165,7 @@ async function loadWardLayer(district, secKeralaCode) {
         console.log("Downloading ward layer:", district);
 
         const response = await fetch(
-            `data/kerala_lsgi/kerala_lsgi_district_ward_maps/${filename}`
+            `data/kerala_lsgi/wards/${filename}`
         );
 
         wardData = await response.json();
@@ -147,9 +178,7 @@ async function loadWardLayer(district, secKeralaCode) {
     wardLayer = L.geoJSON(wardData, {
       filter: function(feature) {
 
-        console.log(feature.properties.joinkey_for_shapefile_lsgi_code);
-        console.log(secKeralaCode);
-          return feature.properties.joinkey_for_shapefile_lsgi_code === secKeralaCode;
+          return feature.properties.sec_kerala_code === secKeralaCode;
 
         },
         style: {
@@ -181,36 +210,17 @@ Promise.all([
   fetch('data/kerala_stateassembly/kerala_stateassembly_2026_mapped.geojson')
     .then(res => res.json()),
 
-  fetch('data/kerala_district.geojson')
+  fetch('data/districts.geojson')
     .then(res => res.json()),
-  
-  fetch('data/kerala_lsgi/kerala_lsgi_boundary_layer.geojson')
-    .then(r => r.json()),
 
-  fetch("data/kerala_lsgi/kerala_lsgi_summary_2025.csv").then(r=>r.text())
+  fetch("data/kerala_lsgi/kerala_lsgi_summary_2025_lookup.json")
+    .then(r => r.json())
 
 ])
 
-.then(([lsData, acData, districtData, lsgiData, lsgiSummaryCsv]) => {
+.then(([lsData, acData, districtData, lsgiLookup]) => {
 
-  // Parse the LSGI summary CSV
-const lines = lsgiSummaryCsv.trim().split("\n");
-
-const headers = lines[0].split(",");
-
-lines.slice(1).forEach(line => {
-
-    const values = line.split(",");
-
-    const row = {};
-
-    headers.forEach((header, index) => {
-        row[header.trim()] = values[index]?.trim();
-    });
-
-    lsgiLookup[row.sec_kerala_code] = row;
-
-});
+;
 
 console.log(lsgiLookup);
 
@@ -427,11 +437,19 @@ console.log(lsgiLookup);
 
         mouseout: function(e) {
           districtLayer.resetStyle(e.target);
-        }
+        },
+        
+        click: function () {
+
+    loadLocalBodies(p.DISTRICT);
+
+}
+        
       });
     }
   });
 
+  /*
   // =====================================================
 // LSGI LAYER
 // =====================================================
@@ -539,6 +557,7 @@ layer.on("click", function () {
   }   // closes onEachFeature
 
 });    // closes L.geoJSON
+*/
 // =====================================================
 // DEFAULT LAYER
 // =====================================================
@@ -551,8 +570,9 @@ map.fitBounds(lsLayer.getBounds());
 // Ensure only LS layer loads initially
 map.removeLayer(acLayer);
 map.removeLayer(districtLayer);
-map.removeLayer(lsgiLayer);
-
+if (localBodyLayer) {
+    map.removeLayer(localBodyLayer);
+}
   // =====================================================
   // TOGGLE CONTROL
   // =====================================================
@@ -561,7 +581,7 @@ map.removeLayer(lsgiLayer);
     "Lok Sabha": lsLayer,
     "State Assembly": acLayer,
     "Districts": districtLayer,
-    "Local Bodies": lsgiLayer
+    // "Local Bodies": localBodyLayer
   };
 
 
@@ -624,8 +644,7 @@ map.removeLayer(lsgiLayer);
   const searchableLayers = L.layerGroup([
     lsLayer,
     acLayer,
-    districtLayer,
-    lsgiLayer
+    districtLayer
 ]);
 
 
@@ -665,7 +684,7 @@ if (props.layer_type === "district") {
 }
 
 if (props.layer_type === "lsgi") {
-    switchToLayer(lsgiLayer);
+    // Dynamic local body loading will be added later.
 }
 
     // Highlight searched feature

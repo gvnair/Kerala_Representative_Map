@@ -2,7 +2,10 @@ from pathlib import Path
 import csv
 import json
 
-ROOT = Path("../data")
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+ROOT = PROJECT_ROOT / "data"
 
 
 def csv_to_json(csv_path):
@@ -59,3 +62,6 @@ csv_to_lookup(
 )
 
 print("\nFinished.\n")
+
+print("Project root:", PROJECT_ROOT)
+print("Data folder :", ROOT)
