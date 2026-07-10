@@ -74,10 +74,9 @@ function getDistrictFile(district) {
 }
 let wardLayer = null;
 
-
 const wardCache = {};
 
-
+let lsgiLookup = {};
 
 function switchToLayer(targetLayer) {
 
@@ -107,46 +106,101 @@ function switchToLayer(targetLayer) {
 
 async function loadLocalBodies(district) {
 
-    // Remove previous district's local bodies
-    if (localBodyLayer) {
+    // Hide district layer
+    if (map.hasLayer(districtLayer)) {
+        map.removeLayer(districtLayer);
+    }
+
+    // Remove previous local body layer
+    if (localBodyLayer && map.hasLayer(localBodyLayer)) {
         map.removeLayer(localBodyLayer);
     }
 
     const filename = getDistrictFile(district);
 
-    // Already created?
-    if (localBodyCache[district]) {
-
-        localBodyLayer = localBodyCache[district];
-        localBodyLayer.addTo(map);
-
-        console.log(`Using cached local bodies: ${district}`);
-
-        return;
-    }
-
-    console.log(`Downloading local bodies: ${district}`);
-
-    const response = await fetch(
-        `data/kerala_lsgi/local_bodies/${filename}`
-    );
-
-    const geojson = await response.json();
-
     localBodyLayer = L.geoJSON(geojson, {
 
-        style: {
-            color: "#555",
+    style: function(feature) {
+
+        const info = lsgiLookup[feature.properties.sec_kerala_code];
+
+        return {
+            color: "#444",
             weight: 1,
-            fillColor: "#cccccc",
-            fillOpacity: 0.5
+            fillColor: info
+                ? getAllianceColor(info.majority_front)
+                : "#9e9e9e",
+            fillOpacity: 0.65
+        };
+
+    },
+
+    onEachFeature: function(feature, layer) {
+
+    layer.on("click", function() {
+
+        const info = lsgiLookup[feature.properties.sec_kerala_code];
+
+        if (!info) {
+            alert("Lookup not found");
+            return;
         }
+
+        loadWardLayer(
+            info.district,
+            info.sec_kerala_code
+        );
+
+        layer.bindPopup(`
+
+            <div style="font-size:14px;">
+
+                <strong style="font-size:16px;">
+                    ${info.lsgd_name}
+                </strong>
+
+                <br><br>
+
+                <strong>Type:</strong>
+                ${info.lsgd_type}<br>
+
+                <strong>District:</strong>
+                ${info.district}<br>
+
+                <strong>Total Wards:</strong>
+                ${info.number_of_wards}<br>
+
+                <hr>
+
+                <strong>Majority Front:</strong>
+                ${info.majority_front}<br>
+
+                <strong>Largest Front:</strong>
+                ${info.largest_front}<br>
+
+                <strong>Majority:</strong>
+                ${info.majority_number}<br>
+
+                <hr>
+
+                <strong>LDF:</strong> ${info.LDF}<br>
+                <strong>UDF:</strong> ${info.UDF}<br>
+                <strong>NDA:</strong> ${info.NDA}<br>
+                <strong>OTH:</strong> ${info.OTH}
+
+            </div>
+
+        `).openPopup();
 
     });
 
+}
+
+});
+
     localBodyCache[district] = localBodyLayer;
 
-    localBodyLayer.addTo(map);
+    map.addLayer(localBodyLayer);
 
 }
 
@@ -167,14 +221,6 @@ async function loadWardLayer(district, secKeralaCode) {
 
     // ---------- CACHE ----------
     if (wardCache[district]) {
-
-        console.log("Using cached ward layer:", district);
-
-        wardData = wardCache[district];
-
-    } else {
-
-        console.log("Downloading ward layer:", district);
 
         const response = await fetch(
             `data/kerala_lsgi/wards/${filename}`
@@ -230,11 +276,11 @@ Promise.all([
 
 ])
 
-.then(([lsData, acData, districtData, lsgiLookup]) => {
+.then(([lsData, acData, districtData, lookup]) => {
 
-;
+  lsgiLookup = lookup;
 
-console.log(lsgiLookup);
+  console.log(lsgiLookup);
 
   // =====================================================
   // LOK SABHA LAYER
@@ -456,8 +502,9 @@ console.log(lsgiLookup);
     await loadLocalBodies(p.district);
 
 }
+}
         
-      });
+      );
     }
   });
 
