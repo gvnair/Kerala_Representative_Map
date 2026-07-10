@@ -81,12 +81,24 @@ const wardCache = {};
 
 function switchToLayer(targetLayer) {
 
-    if (lsLayer && map.hasLayer(lsLayer)) map.removeLayer(lsLayer);
-    if (acLayer && map.hasLayer(acLayer)) map.removeLayer(acLayer);
-    if (districtLayer && map.hasLayer(districtLayer)) map.removeLayer(districtLayer);
-    if (localBodyLayer && map.hasLayer(localBodyLayer)) map.removeLayer(localBodyLayer);
+    [
+        districtLayer,
+        acLayer,
+        lsLayer,
+        localBodyLayer,
+        wardLayer
+    ].forEach(layer => {
 
-    map.addLayer(targetLayer);
+        if (layer && map.hasLayer(layer)) {
+            map.removeLayer(layer);
+        }
+
+    });
+
+    if (targetLayer) {
+        map.addLayer(targetLayer);
+    }
+
 }
 
 // =====================================================
@@ -407,16 +419,16 @@ console.log(lsgiLookup);
 
 
       // Standardized search name
-      feature.properties.name = p.DISTRICT;
+      feature.properties.name = p.district;
 
       feature.properties.search_label =
-        `${p.DISTRICT} (District)`;
+        `${p.district} (District)`;
 
         feature.properties.layer_type = "district";
 
 
       layer.bindTooltip(
-        p.DISTRICT,
+        p.district,
         {
           sticky: true,
           direction: "top",
@@ -438,10 +450,10 @@ console.log(lsgiLookup);
         mouseout: function(e) {
           districtLayer.resetStyle(e.target);
         },
-        
-        click: function () {
 
-    loadLocalBodies(p.DISTRICT);
+        click: async function () {
+
+    await loadLocalBodies(p.district);
 
 }
         
@@ -562,27 +574,24 @@ layer.on("click", function () {
 // DEFAULT LAYER
 // =====================================================
 
-map.addLayer(lsLayer);
+map.addLayer(districtLayer);
 
-map.fitBounds(lsLayer.getBounds());
-
-
-// Ensure only LS layer loads initially
-map.removeLayer(acLayer);
-map.removeLayer(districtLayer);
-if (localBodyLayer) {
-    map.removeLayer(localBodyLayer);
+if (districtLayer.getBounds().isValid()) {
+    map.fitBounds(districtLayer.getBounds());
 }
+
+if (lsLayer) map.removeLayer(lsLayer);
+if (acLayer) map.removeLayer(acLayer);
+
   // =====================================================
   // TOGGLE CONTROL
   // =====================================================
 
   const baseMaps = {
-    "Lok Sabha": lsLayer,
-    "State Assembly": acLayer,
     "Districts": districtLayer,
-    // "Local Bodies": localBodyLayer
-  };
+    "State Assembly": acLayer,
+    "Lok Sabha": lsLayer
+};
 
 
   L.control.layers(baseMaps, null, {
