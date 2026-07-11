@@ -73,7 +73,8 @@ function getDistrictFile(district) {
     return district.toLowerCase().replace(/\s+/g, "_") + ".geojson";
 }
 let wardLayer = null;
-
+let currentDistrict = null;
+let currentLocalBody = null;
 const wardCache = {};
 
 let lsgiLookup = {};
@@ -99,12 +100,64 @@ function switchToLayer(targetLayer) {
     }
 
 }
+// =====================================================
+// BACK BUTTON
+// =====================================================
+
+const backButton = document.getElementById("backButton");
+
+function updateBackButton() {
+
+    if (wardLayer && map.hasLayer(wardLayer)) {
+        backButton.style.display = "block";
+        backButton.innerText = "← Back to Local Bodies";
+    }
+    else if (localBodyLayer && map.hasLayer(localBodyLayer)) {
+        backButton.style.display = "block";
+        backButton.innerText = "← Back to Districts";
+    }
+    else {
+        backButton.style.display = "none";
+    }
+
+}
+backButton.onclick = function () {
+
+    if (wardLayer && map.hasLayer(wardLayer)) {
+
+        map.removeLayer(wardLayer);
+
+        wardLayer = null;
+
+        map.fitBounds(localBodyLayer.getBounds());
+
+    }
+
+    else if (localBodyLayer && map.hasLayer(localBodyLayer)) {
+
+        map.removeLayer(localBodyLayer);
+
+        map.removeLayer(wardLayer);
+
+        map.addLayer(localBodyLayer);
+
+        map.addLayer(districtLayer);
+
+        map.fitBounds(districtLayer.getBounds());
+
+    }
+
+    updateBackButton();
+
+};
 
 // =====================================================
 // LOCAL BODY LOADER
 // =====================================================
 
 async function loadLocalBodies(district) {
+
+  currentDistrict = district;
 
     // Hide district layer
     if (map.hasLayer(districtLayer)) {
@@ -118,7 +171,27 @@ async function loadLocalBodies(district) {
 
     const filename = getDistrictFile(district);
 
-    localBodyLayer = L.geoJSON(geojson, {
+let geojson;
+
+// ---------- CACHE ----------
+if (localBodyCache[district]) {
+
+    geojson = localBodyCache[district];
+
+} else {
+
+    const response = await fetch(
+        `data/kerala_lsgi/localbodies/${filename}`
+    );
+
+    geojson = await response.json();
+
+    localBodyCache[district] = geojson;
+
+}
+
+// ---------- DRAW ----------
+localBodyLayer = L.geoJSON(geojson, {
 
     style: function(feature) {
 
@@ -137,7 +210,7 @@ async function loadLocalBodies(district) {
 
     onEachFeature: function(feature, layer) {
 
-    layer.on("click", function() {
+   layer.on("click", async function() { 
 
         const info = lsgiLookup[feature.properties.sec_kerala_code];
 
@@ -145,8 +218,13 @@ async function loadLocalBodies(district) {
             alert("Lookup not found");
             return;
         }
+        map.fitBounds(layer.getBounds(), {
+    padding: [20,20]
+        });
+        
+        currentLocalBody = feature.properties.sec_kerala_code;
 
-        loadWardLayer(
+        await loadWardLayer(
             info.district,
             info.sec_kerala_code
         );
@@ -198,9 +276,8 @@ async function loadLocalBodies(district) {
 
 });
 
-    localBodyCache[district] = localBodyLayer;
-
     map.addLayer(localBodyLayer);
+    updateBackButton();
 
 }
 
@@ -217,34 +294,42 @@ async function loadWardLayer(district, secKeralaCode) {
 
     const filename = getDistrictFile(district);
 
-    let wardData;
+    let geojson;
 
     // ---------- CACHE ----------
-    if (wardCache[district]) {
+if (wardCache[district]) {
 
-        const response = await fetch(
-            `data/kerala_lsgi/wards/${filename}`
-        );
+    geojson = wardCache[district];
 
-        wardData = await response.json();
+} else {
 
-        wardCache[district] = wardData;
+    const response = await fetch(
+        `data/kerala_lsgi/wards/${filename}`
+    );
 
-    }
+    geojson = await response.json();
+
+    wardCache[district] = geojson;
+
+}
 
     // ---------- DRAW LAYER ----------
-    wardLayer = L.geoJSON(wardData, {
+    wardLayer = L.geoJSON(geojson, {
       filter: function(feature) {
 
           return feature.properties.sec_kerala_code === secKeralaCode;
 
         },
-        style: {
-            color: "#666",
-            weight: 1,
-            fillColor: "#cccccc",
-            fillOpacity: 0.25
-        }
+        style: function(feature) {
+
+    return {
+        color: "#666",
+        weight: 1,
+        fillColor: getAllianceColor(feature.properties.winning_front),
+        fillOpacity: 0.7
+    };
+
+}
 
     });
 
@@ -255,6 +340,7 @@ async function loadWardLayer(district, secKeralaCode) {
     });
 }
 
+updateBackButton();
 }
 // =====================================================
 // LOAD ALL DATA
