@@ -68,6 +68,7 @@ let acLayer;
 let districtLayer;
 let localBodyLayer = null;
 let selectedLocalBody = null;
+let selectedDistrict = null;
 
 const localBodyCache = {};
 function getDistrictFile(district) {
@@ -92,6 +93,7 @@ function switchToLayer(targetLayer) {
     map.addLayer(targetLayer);
 
 }
+let searchableLayers;
 // =====================================================
 // BACK BUTTON
 // =====================================================
@@ -172,10 +174,11 @@ if (wardLayer && map.hasLayer(wardLayer)) {
 }
 
 // Remove previous local body layer
-if (localBodyLayer && map.hasLayer(localBodyLayer)) {
-    map.removeLayer(localBodyLayer);
+if (localBodyLayer) {
+    searchableLayers.removeLayer(localBodyLayer);
+
     localBodyLayer = null;
-}
+      }
 
 selectedLocalBody = null;
 
@@ -220,11 +223,26 @@ localBodyLayer = L.geoJSON(geojson, {
     },
 
     onEachFeature: function(feature, layer) {
+         const info = lsgiLookup[feature.properties.sec_kerala_code];
+
+    if (info) {
+
+        layer.bindTooltip(
+            `
+            <strong>${info.lsgd_name}</strong><br>
+            ${info.lsgd_type}
+            `,
+            {
+                sticky: true,
+                direction: "top",
+                className: "constituency-label"
+            }
+        );
+
+    }
 
    layer.on("click", async function() { 
     selectedLocalBody = layer;
-
-      const info = lsgiLookup[feature.properties.sec_kerala_code];
 
         if (!info) {
             alert("Lookup not found");
@@ -235,8 +253,6 @@ localBodyLayer = L.geoJSON(geojson, {
         });
         
       currentLocalBody = feature.properties.sec_kerala_code;
-          
-      selectedLocalBody = layer;
 
         selectedLocalBody.setStyle({
           color: "#000",
@@ -291,16 +307,16 @@ localBodyLayer = L.geoJSON(geojson, {
         `).openPopup();
 
     });
-
+    
+   
 }
 
 });
 
     map.addLayer(localBodyLayer);
+    searchableLayers.addLayer(localBodyLayer);
     updateBackButton();
-
 }
-
 // =====================================================
 // WARD LOADER
 // =====================================================
@@ -379,7 +395,7 @@ onEachFeature: function(feature, layer) {
 
                 <br><br>
                  <strong>Local Body:</strong>
-                 ${p.lsgd_name}<br>
+                 ${p.lsgd_name} ${p.lsgd_type}<br>
 
                 <strong>Ward Number:</strong>
                 ${p.ward_number}<br>
@@ -670,10 +686,27 @@ Promise.all([
 
        click: async function () {
 
+    // Reset the previously selected district
+    if (selectedDistrict) {
+        districtLayer.resetStyle(selectedDistrict);
+    }
+
+    // Store the newly selected district
+    selectedDistrict = layer;
+
+    // Highlight it
+    selectedDistrict.setStyle({
+        color: "#000",
+        weight: 4,
+        fillOpacity: 0.5
+    });
+
+    // Zoom into the district
     map.fitBounds(layer.getBounds(), {
         padding: [30,30]
     });
 
+    // Load the local bodies
     await loadLocalBodies(p.district);
 
 }
@@ -867,7 +900,7 @@ map.fitBounds(districtLayer.getBounds());
   // SEARCH CONTROL
   // =====================================================
 
-  const searchableLayers = L.layerGroup([
+  searchableLayers = L.layerGroup([
     lsLayer,
     acLayer,
     districtLayer
