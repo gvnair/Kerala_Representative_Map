@@ -67,6 +67,7 @@ let lsLayer;
 let acLayer;
 let districtLayer;
 let localBodyLayer = null;
+let selectedLocalBody = null;
 
 const localBodyCache = {};
 function getDistrictFile(district) {
@@ -81,23 +82,14 @@ let lsgiLookup = {};
 
 function switchToLayer(targetLayer) {
 
-    [
-        districtLayer,
-        acLayer,
-        lsLayer,
-        localBodyLayer,
-        wardLayer
-    ].forEach(layer => {
+    [districtLayer, acLayer, lsLayer].forEach(layer => {
 
-        if (layer && map.hasLayer(layer)) {
+        if (layer && map.hasLayer(layer))
             map.removeLayer(layer);
-        }
 
     });
 
-    if (targetLayer) {
-        map.addLayer(targetLayer);
-    }
+    map.addLayer(targetLayer);
 
 }
 // =====================================================
@@ -129,6 +121,20 @@ backButton.onclick = function () {
 
         wardLayer = null;
 
+        if (selectedLocalBody) {
+
+    selectedLocalBody.setStyle({
+        color: "#222",
+        weight: 2.5,
+        fillOpacity: 0.15
+    });
+
+    selectedLocalBody = null;
+
+}
+
+selectedLocalBody = null;
+
         map.fitBounds(localBodyLayer.getBounds());
 
     }
@@ -159,15 +165,21 @@ async function loadLocalBodies(district) {
 
   currentDistrict = district;
 
-    // Hide district layer
-    if (map.hasLayer(districtLayer)) {
-        map.removeLayer(districtLayer);
-    }
+    // Remove previous ward layer
+if (wardLayer && map.hasLayer(wardLayer)) {
+    map.removeLayer(wardLayer);
+    wardLayer = null;
+}
 
-    // Remove previous local body layer
-    if (localBodyLayer && map.hasLayer(localBodyLayer)) {
-        map.removeLayer(localBodyLayer);
-    }
+// Remove previous local body layer
+if (localBodyLayer && map.hasLayer(localBodyLayer)) {
+    map.removeLayer(localBodyLayer);
+    localBodyLayer = null;
+}
+
+selectedLocalBody = null;
+
+map.closePopup();
 
     const filename = getDistrictFile(district);
 
@@ -198,36 +210,44 @@ localBodyLayer = L.geoJSON(geojson, {
         const info = lsgiLookup[feature.properties.sec_kerala_code];
 
         return {
-            color: "#444",
-            weight: 1,
-            fillColor: info
-                ? getAllianceColor(info.majority_front)
-                : "#9e9e9e",
-            fillOpacity: 0.65
-        };
+    color: "#222",
+    weight: 2.5,
+    opacity: 1,
+    fillColor: "#f5f5f5",
+    fillOpacity: 0.15
+};
 
     },
 
     onEachFeature: function(feature, layer) {
 
    layer.on("click", async function() { 
+    selectedLocalBody = layer;
 
-        const info = lsgiLookup[feature.properties.sec_kerala_code];
+      const info = lsgiLookup[feature.properties.sec_kerala_code];
 
         if (!info) {
             alert("Lookup not found");
             return;
         }
         map.fitBounds(layer.getBounds(), {
-    padding: [20,20]
+          padding: [20,20]
         });
         
-        currentLocalBody = feature.properties.sec_kerala_code;
+      currentLocalBody = feature.properties.sec_kerala_code;
+          
+      selectedLocalBody = layer;
 
+        selectedLocalBody.setStyle({
+          color: "#000",
+          weight: 4,
+          fillOpacity: 0.15
+          });
+        
         await loadWardLayer(
-            info.district,
-            info.sec_kerala_code
-        );
+          info.district,
+          info.sec_kerala_code
+         );
 
         layer.bindPopup(`
 
@@ -296,7 +316,7 @@ async function loadWardLayer(district, secKeralaCode) {
 
     let geojson;
 
-    // ---------- CACHE ----------
+    // ---------- CACHE ----------Í
 if (wardCache[district]) {
 
     geojson = wardCache[district];
@@ -323,22 +343,87 @@ if (wardCache[district]) {
         style: function(feature) {
 
     return {
-        color: "#666",
-        weight: 1,
+        color: "#ffffff",
+        weight: 0.6,
+        opacity: 1,
         fillColor: getAllianceColor(feature.properties.winning_front),
-        fillOpacity: 0.7
+        fillOpacity: 0.8
     };
+
+},
+onEachFeature: function(feature, layer) {
+
+    const p = feature.properties;
+
+   layer.bindTooltip(
+    `
+    <strong>Ward ${p.ward_number}</strong><br>
+    ${p.ward_name}
+    `,
+    {
+        sticky: true,
+        direction: "top",
+        className: "constituency-label"
+    }
+);
+
+    layer.on("click", function() {
+
+        layer.bindPopup(`
+
+            <div style="font-size:14px;">
+
+                <strong style="font-size:16px;">
+                    ${p.ward_name || `Ward ${p.ward_number}`}
+                </strong>
+
+                <br><br>
+                 <strong>Local Body:</strong>
+                 ${p.lsgd_name}<br>
+
+                <strong>Ward Number:</strong>
+                ${p.ward_number}<br>
+
+                <strong>Representative:</strong>
+                ${p.elected_representative}<br>
+
+                <strong>Party:</strong>
+                ${p.winning_party}<br>
+
+                <strong>Front:</strong>
+                ${p.winning_front}<br>
+
+                <strong>Votes:</strong>
+                ${p.votes}<br>
+
+                <strong>Election Year:</strong>
+                ${p.year}
+
+            </div>
+
+        `).openPopup();
+
+    });
 
 }
 
     });
 
     wardLayer.addTo(map);
+    // Fade the local body layer into the background
+localBodyLayer.setStyle({
+    color: "#444",
+    weight: 2,
+    fillOpacity: 0.05
+});
+    wardLayer.bringToFront();
+
     if (wardLayer.getBounds().isValid()) {
     map.fitBounds(wardLayer.getBounds(), {
         padding: [30, 30]
     });
 }
+
 
 updateBackButton();
 }
@@ -583,7 +668,11 @@ Promise.all([
           districtLayer.resetStyle(e.target);
         },
 
-        click: async function () {
+       click: async function () {
+
+    map.fitBounds(layer.getBounds(), {
+        padding: [30,30]
+    });
 
     await loadLocalBodies(p.district);
 
@@ -707,14 +796,9 @@ layer.on("click", function () {
 // DEFAULT LAYER
 // =====================================================
 
-map.addLayer(districtLayer);
+switchToLayer(districtLayer);
 
-if (districtLayer.getBounds().isValid()) {
-    map.fitBounds(districtLayer.getBounds());
-}
-
-if (lsLayer) map.removeLayer(lsLayer);
-if (acLayer) map.removeLayer(acLayer);
+map.fitBounds(districtLayer.getBounds());
 
   // =====================================================
   // TOGGLE CONTROL
