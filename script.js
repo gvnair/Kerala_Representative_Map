@@ -1,6 +1,5 @@
 var map = L.map('map');
 
-
 // =====================================================
 // BASE MAP
 // =====================================================
@@ -8,7 +7,6 @@ var map = L.map('map');
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
-
 
 // =====================================================
 // ALLIANCE COLORS
@@ -22,7 +20,6 @@ function getAllianceColor(front) {
 
   return "#9e9e9e";
 }
-
 
 // =====================================================
 // CONSTITUENCY STYLE
@@ -40,7 +37,6 @@ function style(feature) {
 
 }
 
-
 // =====================================================
 // HOVER HIGHLIGHT
 // =====================================================
@@ -57,7 +53,6 @@ function highlightFeature(e) {
 
   layer.bringToFront();
 }
-
 
 // =====================================================
 // LAYER VARIABLES
@@ -94,6 +89,7 @@ function switchToLayer(targetLayer) {
 
 }
 let searchableLayers;
+
 // =====================================================
 // BACK BUTTON
 // =====================================================
@@ -113,7 +109,6 @@ function updateBackButton() {
     else {
         backButton.style.display = "none";
     }
-
 }
 backButton.onclick = function () {
 
@@ -222,7 +217,6 @@ if (localBodyCache[district]) {
     localBodyCache[district] = geojson;
 
 }
-
 // ---------- DRAW ----------
 localBodyLayer = L.geoJSON(geojson, {
 
@@ -263,7 +257,8 @@ localBodyLayer = L.geoJSON(geojson, {
     selectedLocalBody = layer;
 
         if (!info) {
-            alert("Lookup not found");
+
+          console.warn("Lookup not found");
             return;
         }
         map.fitBounds(layer.getBounds(), {
@@ -274,8 +269,8 @@ localBodyLayer = L.geoJSON(geojson, {
 
         selectedLocalBody.setStyle({
           color: "#000",
-          weight: 4,
-          fillOpacity: 0.15
+          weight: 3.5,
+          fillOpacity: 0.1
           });
         
         await loadWardLayer(
@@ -381,7 +376,7 @@ if (wardCache[district]) {
         weight: 0.6,
         opacity: 1,
         fillColor: getAllianceColor(feature.properties.winning_front),
-        fillOpacity: 0.8
+        fillOpacity: 0.7
     };
 
 },
@@ -484,8 +479,6 @@ Promise.all([
 .then(([lsData, acData, districtData, lookup]) => {
 
   lsgiLookup = lookup;
-
-  console.log(lsgiLookup);
 
   // =====================================================
   // LOK SABHA LAYER
@@ -734,115 +727,6 @@ Promise.all([
     }
   });
 
-  /*
-  // =====================================================
-// LSGI LAYER
-// =====================================================
-
-lsgiLayer = L.geoJSON(lsgiData, {
-
-  style: function(feature) {
-
-    const info = lsgiLookup[feature.properties.sec_kerala_code];
-
-    return {
-        color: "#444",
-        weight: 1,
-        fillColor: info
-            ? getAllianceColor(info.majority_front)
-            : "#9e9e9e",
-        fillOpacity: 0.6
-    };
-
-},
-
-  onEachFeature: function (feature, layer) {
-
-    const p = feature.properties;
-
-    const info = lsgiLookup[p.sec_kerala_code];
-
-    if (info) {
-
-    feature.properties.name = info.lsgd_name;
-
-    feature.properties.search_label =
-        `${info.lsgd_name} (${info.lsgd_type})`;
-
-    feature.properties.layer_type = "lsgd";
-
-}
-    // Tooltip
-    layer.bindTooltip(
-      info ? info.lsgd_name : p.lsgd_name,
-      {
-        sticky: true,
-        direction: "top",
-        className: "constituency-label"
-      }
-    );
-
-    // Popup
-layer.on("click", function () {
-
-    const info = lsgiLookup[p.sec_kerala_code];
-
-    if (!info) {
-        layer.bindPopup("<b>Information not found.</b>").openPopup();
-        return;
-    }
-
-    console.log(info);
-
-    loadWardLayer(
-        info.district,
-        info.sec_kerala_code
-    );
-
-    layer.bindPopup(`
-        <div style="font-size:14px;">
-
-            <strong style="font-size:16px;">
-                ${info.lsgd_name}
-            </strong>
-
-            <br><br>
-
-            <strong>Type:</strong>
-            ${info.lsgd_type}<br>
-
-            <strong>District:</strong>
-            ${info.district}<br>
-
-            <strong>Total Wards:</strong>
-            ${info.number_of_wards}<br>
-
-            <hr>
-
-            <strong>Majority Front:</strong>
-            ${info.majority_front}<br>
-
-            <strong>Largest Front:</strong>
-            ${info.largest_front}<br>
-
-            <strong>Majority:</strong>
-            ${info.majority_number}<br>
-
-            <hr>
-
-            <strong>LDF:</strong> ${info.LDF}<br>
-            <strong>UDF:</strong> ${info.UDF}<br>
-            <strong>NDA:</strong> ${info.NDA}<br>
-            <strong>OTH:</strong> ${info.OTH}
-
-        </div>
-    `).openPopup();
-    });
-
-  }   // closes onEachFeature
-
-});    // closes L.geoJSON
-*/
 // =====================================================
 // DEFAULT LAYER
 // =====================================================
@@ -865,8 +749,6 @@ map.fitBounds(districtLayer.getBounds());
   L.control.layers(baseMaps, null, {
     collapsed: false
   }).addTo(map);
-
-
 
   // =====================================================
   // LEGEND
@@ -912,8 +794,6 @@ map.fitBounds(districtLayer.getBounds());
 
   legend.addTo(map);
 
-
-
   // =====================================================
   // SEARCH CONTROL
   // =====================================================
@@ -923,7 +803,6 @@ map.fitBounds(districtLayer.getBounds());
     acLayer,
     districtLayer
 ]);
-
 
   const searchControl = new L.Control.Search({
 
@@ -976,7 +855,6 @@ if (props.layer_type === "lsgi") {
 
     }
 
-
     // Open popup if available
   
     if (e.layer.openPopup) {
@@ -985,8 +863,17 @@ if (props.layer_type === "lsgi") {
   
   });
 
-
  map.addControl(searchControl);
 
 })
 .catch(err => console.error(err));
+
+const aboutButton = document.getElementById("aboutButton");
+
+const aboutPanel = document.getElementById("aboutPanel");
+
+aboutButton.onclick = function(){
+
+    aboutPanel.classList.toggle("hidden");
+
+}
