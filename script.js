@@ -127,8 +127,8 @@ backButton.onclick = function () {
 
     selectedLocalBody.setStyle({
         color: "#222",
-        weight: 2.5,
-        fillOpacity: 0.15
+        weight: 3.5,
+        fillOpacity: 0.1
     });
 
     selectedLocalBody = null;
@@ -166,6 +166,24 @@ selectedLocalBody = null;
 async function loadLocalBodies(district) {
 
   currentDistrict = district;
+
+  map.closePopup();
+
+// Remove previous ward layer
+if (wardLayer && map.hasLayer(wardLayer)) {
+    map.removeLayer(wardLayer);
+    wardLayer = null;
+}
+
+// Remove previous local body layer
+if (localBodyLayer && map.hasLayer(localBodyLayer)) {
+    searchableLayers.removeLayer(localBodyLayer);
+    map.removeLayer(localBodyLayer);
+    localBodyLayer = null;
+}
+
+// Reset previously selected local body
+selectedLocalBody = null;
 
     // Remove previous ward layer
 if (wardLayer && map.hasLayer(wardLayer)) {
