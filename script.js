@@ -88,7 +88,8 @@ function switchToLayer(targetLayer) {
     map.addLayer(targetLayer);
 
 }
-let searchableLayers;
+// Searchable layers group — initialize early so loaders can safely reference it
+let searchableLayers = L.layerGroup();
 
 // =====================================================
 // BACK BUTTON
@@ -729,9 +730,14 @@ Promise.all([
 
 // =====================================================
 // DEFAULT LAYER
+// Ensure only the district layer is visible by default.
 // =====================================================
 
 switchToLayer(districtLayer);
+
+// Be explicit: remove other base layers if they somehow exist
+if (acLayer && map.hasLayer(acLayer)) map.removeLayer(acLayer);
+if (lsLayer && map.hasLayer(lsLayer)) map.removeLayer(lsLayer);
 
 map.fitBounds(districtLayer.getBounds());
 
@@ -746,9 +752,41 @@ map.fitBounds(districtLayer.getBounds());
 };
 
 
-  L.control.layers(baseMaps, null, {
+  // Ensure map only has the district layer before creating the control
+  if (acLayer && map.hasLayer(acLayer)) map.removeLayer(acLayer);
+  if (lsLayer && map.hasLayer(lsLayer)) map.removeLayer(lsLayer);
+  if (!map.hasLayer(districtLayer)) map.addLayer(districtLayer);
+
+  const layersControl = L.control.layers(baseMaps, null, {
     collapsed: false
   }).addTo(map);
+
+  // Explicitly sync the control radios to reflect the actual map state
+  setTimeout(() => {
+    try {
+      const baseInputs = document.querySelectorAll('.leaflet-control-layers-base input[type="radio"]');
+      baseInputs.forEach((input) => {
+        const labelSpan = input.closest('label') ? input.closest('label').querySelector('span span') : null;
+        const label = labelSpan ? labelSpan.textContent.trim() : (input.nextSibling ? input.nextSibling.textContent.trim() : '');
+        const layer = baseMaps[label];
+        if (layer) input.checked = map.hasLayer(layer);
+      });
+
+      // Force only the Districts radio to be checked by default to avoid mismatches
+      baseInputs.forEach((input) => {
+        const labelSpan = input.closest('label') ? input.closest('label').querySelector('span span') : null;
+        const label = labelSpan ? labelSpan.textContent.trim() : (input.nextSibling ? input.nextSibling.textContent.trim() : '');
+        if (label === 'Districts') {
+          input.checked = true;
+        } else {
+          input.checked = false;
+        }
+      });
+
+    } catch (e) {
+      console.warn('Could not sync layer control radios', e);
+    }
+  }, 200);
 
   // =====================================================
   // LEGEND
@@ -864,6 +902,11 @@ if (props.layer_type === "lsgi") {
   });
 
  map.addControl(searchControl);
+
+  // Leaflet Search automatically adds the provided layer group to the map.
+  // Since that group contains all base layers, remove the non-default layers again.
+  if (acLayer && map.hasLayer(acLayer)) map.removeLayer(acLayer);
+  if (lsLayer && map.hasLayer(lsLayer)) map.removeLayer(lsLayer);
 
 })
 .catch(err => console.error(err));

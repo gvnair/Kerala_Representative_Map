@@ -1,0 +1,1 @@
+Patching script.js to ensure baseLayers sync: remove non-district base layers before control creation, and explicitly set radio inputs checked based on map.hasLayer().
