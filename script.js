@@ -14,11 +14,47 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 function getAllianceColor(front) {
 
-  if (front === "LDF") return "#e53935";
-  if (front === "UDF") return "#1e88e5";
-  if (front === "NDA") return "#fb8c00";
+  const normalizedFront = String(front || "").trim().toUpperCase();
+
+  if (normalizedFront === "LDF") return "#e53935";
+  if (normalizedFront === "UDF") return "#1e88e5";
+  if (normalizedFront === "NDA") return "#fb8c00";
 
   return "#9e9e9e";
+}
+
+function getNeutralStyle(overrides = {}) {
+  return {
+    fillColor: "#f5f5f5",
+    weight: 1.2,
+    opacity: 1,
+    color: "#555",
+    fillOpacity: 0.14,
+    ...overrides
+  };
+}
+
+function getSelectedStyle(front, overrides = {}) {
+  if (front && ["LDF", "UDF", "NDA"].includes(front)) {
+    return {
+      fillColor: getAllianceColor(front),
+      color: "#000",
+      weight: 2.5,
+      fillOpacity: 0.9,
+      ...overrides
+    };
+  }
+
+  return getNeutralStyle({
+    color: "#000",
+    weight: 2.8,
+    fillOpacity: 0.28,
+    ...overrides
+  });
+}
+
+function applySelectionStyle(layer, front, overrides = {}) {
+  layer.setStyle(getSelectedStyle(front, overrides));
 }
 
 // =====================================================
@@ -26,15 +62,7 @@ function getAllianceColor(front) {
 // =====================================================
 
 function style(feature) {
-
-  return {
-    fillColor: getAllianceColor(feature.properties.winning_front),
-    weight: 1,
-    opacity: 1,
-    color: "white",
-    fillOpacity: 0.75
-  };
-
+  return getNeutralStyle();
 }
 
 // =====================================================
@@ -45,11 +73,21 @@ function highlightFeature(e) {
 
   const layer = e.target;
 
-  layer.setStyle({
+  if (
+    (selectedLS && selectedLS === layer) ||
+    (selectedAC && selectedAC === layer) ||
+    (selectedDistrict && selectedDistrict === layer) ||
+    (selectedLocalBody && selectedLocalBody === layer) ||
+    (selectedWard && selectedWard === layer)
+  ) {
+    return;
+  }
+
+  layer.setStyle(getNeutralStyle({
     weight: 3,
     color: "#222",
-    fillOpacity: 1
-  });
+    fillOpacity: 0.24
+  }));
 
   layer.bringToFront();
 }
@@ -64,6 +102,9 @@ let districtLayer;
 let localBodyLayer = null;
 let selectedLocalBody = null;
 let selectedDistrict = null;
+let selectedAC = null;
+let selectedLS = null;
+let selectedWard = null;
 
 const localBodyCache = {};
 function getDistrictFile(district) {
@@ -76,17 +117,77 @@ const wardCache = {};
 
 let lsgiLookup = {};
 
-function switchToLayer(targetLayer) {
+function resetSelectedLocalBody() {
+    if (selectedLocalBody && selectedLocalBody.setStyle) {
+        selectedLocalBody.setStyle(getNeutralStyle());
+    }
+}
+
+function resetDrillDownState({ preserveLocalBodyLayer = false } = {}) {
+    map.closePopup();
+
+    if (wardLayer) {
+        if (map.hasLayer(wardLayer)) {
+            map.removeLayer(wardLayer);
+        }
+        wardLayer = null;
+    }
+
+    if (localBodyLayer) {
+        if (map.hasLayer(localBodyLayer)) {
+            map.removeLayer(localBodyLayer);
+        }
+
+        if (!preserveLocalBodyLayer) {
+            searchableLayers.removeLayer(localBodyLayer);
+            localBodyLayer = null;
+        }
+    }
+
+    resetSelectedLocalBody();
+
+    if (selectedDistrict && districtLayer) {
+        districtLayer.resetStyle(selectedDistrict);
+    }
+
+    if (selectedWard && wardLayer === null) {
+        selectedWard = null;
+    }
+
+    if (selectedAC && acLayer) {
+        acLayer.resetStyle(selectedAC);
+        selectedAC = null;
+    }
+
+    if (selectedLS && lsLayer) {
+        lsLayer.resetStyle(selectedLS);
+        selectedLS = null;
+    }
+
+    selectedLocalBody = null;
+    selectedDistrict = null;
+    currentLocalBody = null;
+    currentDistrict = null;
+
+    updateBackButton();
+}
+
+function activateTopLevelLayer(targetLayer) {
+    resetDrillDownState();
 
     [districtLayer, acLayer, lsLayer].forEach(layer => {
-
-        if (layer && map.hasLayer(layer))
-            map.removeLayer(layer);
-
+      if (layer && layer !== targetLayer && map.hasLayer(layer)) {
+        map.removeLayer(layer);
+      }
     });
 
-    map.addLayer(targetLayer);
+    if (targetLayer && !map.hasLayer(targetLayer)) {
+      map.addLayer(targetLayer);
+    }
+}
 
+function switchToLayer(targetLayer) {
+    activateTopLevelLayer(targetLayer);
 }
 // Searchable layers group — initialize early so loaders can safely reference it
 let searchableLayers = L.layerGroup();
@@ -112,47 +213,30 @@ function updateBackButton() {
     }
 }
 backButton.onclick = function () {
-
     if (wardLayer && map.hasLayer(wardLayer)) {
-
-        map.removeLayer(wardLayer);
-
-        wardLayer = null;
-
-        if (selectedLocalBody) {
-
-    selectedLocalBody.setStyle({
-        color: "#222",
-        weight: 3.5,
-        fillOpacity: 0.1
-    });
-
-    selectedLocalBody = null;
-
-}
-
-selectedLocalBody = null;
-
-        map.fitBounds(localBodyLayer.getBounds());
-
+        const previousLocalBodyLayer = localBodyLayer;
+        resetDrillDownState({ preserveLocalBodyLayer: true });
+        if (previousLocalBodyLayer) {
+            map.addLayer(previousLocalBodyLayer);
+        }
+        if (districtLayer) {
+            map.addLayer(districtLayer);
+            map.fitBounds(districtLayer.getBounds());
+        }
+        updateBackButton();
+        return;
     }
 
-    else if (localBodyLayer && map.hasLayer(localBodyLayer)) {
-
-        map.removeLayer(localBodyLayer);
-
-        map.removeLayer(wardLayer);
-
-        map.addLayer(localBodyLayer);
-
-        map.addLayer(districtLayer);
-
-        map.fitBounds(districtLayer.getBounds());
-
+    if (localBodyLayer && map.hasLayer(localBodyLayer)) {
+        resetDrillDownState();
+        if (districtLayer) {
+            map.addLayer(districtLayer);
+            map.fitBounds(districtLayer.getBounds());
+        }
+        return;
     }
 
     updateBackButton();
-
 };
 
 // =====================================================
@@ -163,40 +247,7 @@ async function loadLocalBodies(district) {
 
   currentDistrict = district;
 
-  map.closePopup();
-
-// Remove previous ward layer
-if (wardLayer && map.hasLayer(wardLayer)) {
-    map.removeLayer(wardLayer);
-    wardLayer = null;
-}
-
-// Remove previous local body layer
-if (localBodyLayer && map.hasLayer(localBodyLayer)) {
-    searchableLayers.removeLayer(localBodyLayer);
-    map.removeLayer(localBodyLayer);
-    localBodyLayer = null;
-}
-
-// Reset previously selected local body
-selectedLocalBody = null;
-
-    // Remove previous ward layer
-if (wardLayer && map.hasLayer(wardLayer)) {
-    map.removeLayer(wardLayer);
-    wardLayer = null;
-}
-
-// Remove previous local body layer
-if (localBodyLayer) {
-    searchableLayers.removeLayer(localBodyLayer);
-
-    localBodyLayer = null;
-      }
-
-selectedLocalBody = null;
-
-map.closePopup();
+  resetDrillDownState();
 
     const filename = getDistrictFile(district);
 
@@ -225,13 +276,11 @@ localBodyLayer = L.geoJSON(geojson, {
 
         const info = lsgiLookup[feature.properties.sec_kerala_code];
 
-        return {
-    color: "#222",
-    weight: 2.5,
-    opacity: 1,
-    fillColor: "#f5f5f5",
-    fillOpacity: 0.15
-};
+        return getNeutralStyle({
+          color: "#555",
+          weight: 1.3,
+          fillOpacity: 0.14
+        });
 
     },
 
@@ -254,7 +303,15 @@ localBodyLayer = L.geoJSON(geojson, {
 
     }
 
-   layer.on("click", async function() { 
+   layer.on("click", async function() {
+    if (selectedLocalBody && selectedLocalBody !== layer) {
+      selectedLocalBody.setStyle(getNeutralStyle({
+        color: "#555",
+        weight: 1.3,
+        fillOpacity: 0.14
+      }));
+    }
+
     selectedLocalBody = layer;
 
         if (!info) {
@@ -268,11 +325,10 @@ localBodyLayer = L.geoJSON(geojson, {
         
       currentLocalBody = feature.properties.sec_kerala_code;
 
-        selectedLocalBody.setStyle({
-          color: "#000",
-          weight: 3.5,
-          fillOpacity: 0.1
-          });
+        applySelectionStyle(layer, info.majority_front || info.largest_front || null, {
+          weight: 2.7,
+          fillOpacity: 0.28
+        });
         
         await loadWardLayer(
           info.district,
@@ -370,82 +426,93 @@ if (wardCache[district]) {
           return feature.properties.sec_kerala_code === secKeralaCode;
 
         },
-        style: function(feature) {
+      style: function(feature) {
 
-    return {
-        color: "#ffffff",
-        weight: 0.6,
-        opacity: 1,
-        fillColor: getAllianceColor(feature.properties.winning_front),
-        fillOpacity: 0.7
-    };
+    return getNeutralStyle({
+      color: "#555",
+      weight: 0.8,
+      fillOpacity: 0.14
+    });
 
-},
-onEachFeature: function(feature, layer) {
+  },
+  onEachFeature: function(feature, layer) {
 
     const p = feature.properties;
 
-   layer.bindTooltip(
+     layer.bindTooltip(
     `
     <strong>Ward ${p.ward_number}</strong><br>
     ${p.ward_name}
     `,
     {
-        sticky: true,
-        direction: "top",
-        className: "constituency-label"
+      sticky: true,
+      direction: "top",
+      className: "constituency-label"
     }
-);
+  );
 
     layer.on("click", function() {
 
-        layer.bindPopup(`
+      // ensure only one ward highlighted at a time
+      if (selectedWard && selectedWard !== layer && wardLayer) {
+        wardLayer.resetStyle(selectedWard);
+      }
+      selectedWard = layer;
 
-            <div style="font-size:14px;">
+      applySelectionStyle(layer, p.winning_front, {
+        weight: 1.4,
+        fillOpacity: 0.28
+      });
 
-                <strong style="font-size:16px;">
-                    ${p.ward_name || `Ward ${p.ward_number}`}
-                </strong>
+      layer.bringToFront();
 
-                <br><br>
-                 <strong>Local Body:</strong>
-                 ${p.lsgd_name} ${p.lsgd_type}<br>
+      layer.bindPopup(`
 
-                <strong>Ward Number:</strong>
-                ${p.ward_number}<br>
+        <div style="font-size:14px;">
 
-                <strong>Representative:</strong>
-                ${p.elected_representative}<br>
+          <strong style="font-size:16px;">
+            ${p.ward_name || `Ward ${p.ward_number}`}
+          </strong>
 
-                <strong>Party:</strong>
-                ${p.winning_party}<br>
+          <br><br>
+           <strong>Local Body:</strong>
+           ${p.lsgd_name} ${p.lsgd_type}<br>
 
-                <strong>Front:</strong>
-                ${p.winning_front}<br>
+          <strong>Ward Number:</strong>
+          ${p.ward_number}<br>
 
-                <strong>Votes:</strong>
-                ${p.votes}<br>
+          <strong>Representative:</strong>
+          ${p.elected_representative}<br>
 
-                <strong>Election Year:</strong>
-                ${p.year}
+          <strong>Party:</strong>
+          ${p.winning_party}<br>
 
-            </div>
+          <strong>Front:</strong>
+          ${p.winning_front}<br>
 
-        `).openPopup();
+          <strong>Votes:</strong>
+          ${p.votes}<br>
+
+          <strong>Election Year:</strong>
+          ${p.year}
+
+        </div>
+
+      `).openPopup();
 
     });
 
-}
+  }
 
     });
 
     wardLayer.addTo(map);
     // Fade the local body layer into the background
-localBodyLayer.setStyle({
-    color: "#444",
-    weight: 2,
-    fillOpacity: 0.05
-});
+localBodyLayer.setStyle(getNeutralStyle({
+    color: "#555",
+    weight: 1.3,
+    fillOpacity: 0.14
+}));
     wardLayer.bringToFront();
 
     if (wardLayer.getBounds().isValid()) {
@@ -493,68 +560,56 @@ Promise.all([
 
       const p = feature.properties;
 
-
       // Standardized search name
       feature.properties.name = p.ls_seat_name;
 
-      feature.properties.search_label =
-      `${p.ls_seat_name} (Lok Sabha)`;
+      feature.properties.search_label = `${p.ls_seat_name} (Lok Sabha)`;
 
       feature.properties.layer_type = "loksabha";
 
-
       // Tooltip
-      layer.bindTooltip(
-        p.ls_seat_name,
-        {
-          sticky: true,
-          direction: "top",
-          className: "constituency-label"
-        }
-      );
-
+      layer.bindTooltip(p.ls_seat_name, {
+        sticky: true,
+        direction: "top",
+        className: "constituency-label"
+      });
 
       // Events
       layer.on({
-
         mouseover: highlightFeature,
-
         mouseout: function(e) {
+          if (selectedLS && selectedLS === e.target) {
+            return; // keep selected style
+          }
           lsLayer.resetStyle(e.target);
         },
-
         click: function() {
+          // clear the previous LS selection and remove the previous AC selection
+          if (selectedLS && selectedLS !== layer) {
+            lsLayer.resetStyle(selectedLS);
+          }
+          if (selectedAC && selectedAC !== layer) {
+            acLayer.resetStyle(selectedAC);
+          }
+          selectedLS = layer;
+          selectedAC = null;
+
+          // apply alliance colour to selected feature
+          applySelectionStyle(layer, p.winning_front);
+
+          layer.bringToFront();
 
           layer.bindPopup(`
-
             <div style="font-size:14px;">
-
-              <strong style="font-size:16px;">
-                ${p.ls_seat_name}
-              </strong>
-
+              <strong style="font-size:16px;">${p.ls_seat_name}</strong>
               <br><br>
-
-              <strong>MP:</strong>
-              ${p.elected_representative}<br>
-
-              <strong>Party:</strong>
-              ${p.winning_party} (${p.winning_party_full})<br>
-
-              <strong>Front:</strong>
-              ${p.winning_front} (${p.fron_full})<br>
-
-              <strong>Election Year:</strong>
-              ${2024}<br>
-
-              <strong>Margin:</strong>
-              ${p.margin}<br>
-
-              <strong>Turnout:</strong>
-              ${p.turnout_percentage}
-
+              <strong>MP:</strong> ${p.elected_representative}<br>
+              <strong>Party:</strong> ${p.winning_party} (${p.winning_party_full})<br>
+              <strong>Front:</strong> ${p.winning_front} (${p.fron_full})<br>
+              <strong>Election Year:</strong> ${2024}<br>
+              <strong>Margin:</strong> ${p.margin}<br>
+              <strong>Turnout:</strong> ${p.turnout_percentage}
             </div>
-
           `).openPopup();
         }
       });
@@ -598,42 +653,39 @@ Promise.all([
 
       // Events
       layer.on({
-
         mouseover: highlightFeature,
-
         mouseout: function(e) {
+          if (selectedAC && selectedAC === e.target) {
+            return; // keep selected style
+          }
           acLayer.resetStyle(e.target);
         },
-
         click: function() {
+          // clear the previous AC selection and remove the previous LS selection
+          if (selectedAC && selectedAC !== layer) {
+            acLayer.resetStyle(selectedAC);
+          }
+          if (selectedLS && selectedLS !== layer) {
+            lsLayer.resetStyle(selectedLS);
+          }
+          selectedAC = layer;
+          selectedLS = null;
+
+          // apply alliance colour to selected feature
+          applySelectionStyle(layer, p.winning_front);
+
+          layer.bringToFront();
 
           layer.bindPopup(`
-
             <div style="font-size:14px;">
-
-              <strong style="font-size:16px;">
-                ${p.Asmbly_Con}
-              </strong>
-
+              <strong style="font-size:16px;">${p.Asmbly_Con}</strong>
               <br><br>
-
-              <strong>District:</strong>
-              ${p.District || "N/A"}<br>
-
-              <strong>MLA:</strong>
-              ${p.elected_representative}<br>
-
-              <strong>Party:</strong>
-              ${p.winning_party} (${p.winning_party_full})<br>
-
-              <strong>Front:</strong>
-              ${p.winning_front} (${p.winning_front_full})<br>
-
-              <strong>Election Year:</strong>
-              ${p.election_year || "2026"}<br>
-
+              <strong>District:</strong> ${p.District || "N/A"}<br>
+              <strong>MLA:</strong> ${p.elected_representative}<br>
+              <strong>Party:</strong> ${p.winning_party} (${p.winning_party_full})<br>
+              <strong>Front:</strong> ${p.winning_front} (${p.winning_front_full})<br>
+              <strong>Election Year:</strong> ${p.election_year || "2026"}<br>
             </div>
-
           `).openPopup();
         }
       });
@@ -650,12 +702,11 @@ Promise.all([
 
     style: function(feature) {
 
-      return {
-        color: "#222",
-        weight: 2,
-        fillColor: "#eeeeee",
-        fillOpacity: 0.5
-      };
+      return getNeutralStyle({
+        color: "#555",
+        weight: 1.3,
+        fillOpacity: 0.14
+      });
     },
 
     onEachFeature: function(feature, layer) {
@@ -685,14 +736,21 @@ Promise.all([
       layer.on({
 
         mouseover: function(e) {
+          if (selectedDistrict && selectedDistrict === e.target) {
+            return;
+          }
 
-          e.target.setStyle({
-            weight: 3,
-            fillOpacity: 0.7
-          });
+          e.target.setStyle(getNeutralStyle({
+            color: "#222",
+            weight: 2.8,
+            fillOpacity: 0.24
+          }));
         },
 
         mouseout: function(e) {
+          if (selectedDistrict && selectedDistrict === e.target) {
+            return;
+          }
           districtLayer.resetStyle(e.target);
         },
 
@@ -706,11 +764,11 @@ Promise.all([
     // Store the newly selected district
     selectedDistrict = layer;
 
-    // Highlight it
-    selectedDistrict.setStyle({
+    // Highlight it without applying party colours
+    applySelectionStyle(selectedDistrict, null, {
         color: "#000",
-        weight: 4,
-        fillOpacity: 0.5
+        weight: 3.2,
+        fillOpacity: 0.28
     });
 
     // Zoom into the district
@@ -760,6 +818,12 @@ map.fitBounds(districtLayer.getBounds());
   const layersControl = L.control.layers(baseMaps, null, {
     collapsed: false
   }).addTo(map);
+
+  map.on('baselayerchange', function (event) {
+    if (event && event.layer && [districtLayer, acLayer, lsLayer].includes(event.layer)) {
+      activateTopLevelLayer(event.layer);
+    }
+  });
 
   // Explicitly sync the control radios to reflect the actual map state
   setTimeout(() => {
@@ -824,6 +888,12 @@ map.fitBounds(districtLayer.getBounds());
       <div>
         <span class="district-line"></span>
         District Boundary
+      </div>
+
+      <hr>
+
+      <div>
+        <small>Alliance colours apply only to the currently selected feature; the default map stays neutral.</small>
       </div>
     `;
 
