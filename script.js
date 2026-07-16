@@ -211,7 +211,13 @@ const mobileLocalBodyTypeSelect = document.getElementById("mobileLocalBodyTypeSe
 const mobileLocalBodySelect = document.getElementById("mobileLocalBodySelect");
 const mobileAccordionButtons = Array.from(document.querySelectorAll(".mobile-menu__section-toggle"));
 const mobileMenuSections = Array.from(document.querySelectorAll(".mobile-menu__section"));
+const titleCard = document.getElementById("title-card");
+const titleHeading = titleCard ? titleCard.querySelector("h2") : null;
+const mobileSearchInput = document.getElementById("mobileSearchInput");
+const mobileSearchButton = document.getElementById("mobileSearchButton");
 let isMobileMenuOpen = false;
+let hasInteractedWithMobileUI = false;
+let searchControl = null;
 
 function updateBackButton() {
 
@@ -437,7 +443,7 @@ async function activateLocalBodySelection(feature, layer, info) {
   });
 
   if (window.innerWidth <= 768) {
-    collapseBrowseMenuSection();
+    closeMobileMenu();
   }
 
   await loadWardLayer(info.district, info.sec_kerala_code);
@@ -484,12 +490,66 @@ async function activateLocalBodySelection(feature, layer, info) {
   `).openPopup();
 }
 
+function updateMobileTitleLayout() {
+  if (!titleCard) return;
+  const titleHeight = titleCard.offsetHeight || 70;
+  document.documentElement.style.setProperty("--mobile-title-height", `${titleHeight}px`);
+  if (mobileMenuToggle) {
+    mobileMenuToggle.style.top = `calc(${titleHeight}px + 10px)`;
+  }
+}
+
+function compactMobileTitle() {
+  if (!titleCard || hasInteractedWithMobileUI) return;
+
+  hasInteractedWithMobileUI = true;
+  titleCard.classList.add("title-card--compact");
+
+  if (titleHeading) {
+    titleHeading.textContent = "Kerala Map";
+  }
+
+  requestAnimationFrame(updateMobileTitleLayout);
+}
+
+function markMobileInteraction() {
+  if (window.innerWidth > 768) return;
+  compactMobileTitle();
+}
+
+function handleTitleHomeAction() {
+  if (!districtLayer) return;
+  resetDrillDownState();
+  switchToLayer(districtLayer);
+  map.fitBounds(districtLayer.getBounds(), {
+    padding: [20, 20]
+  });
+}
+
+function triggerMobileSearch() {
+  if (!mobileSearchInput || !searchControl) return;
+  const query = mobileSearchInput.value.trim();
+  if (!query) return;
+
+  if (typeof searchControl.searchText === "function") {
+    searchControl.searchText(query);
+  } else if (searchControl._input) {
+    searchControl._input.value = query;
+    if (typeof searchControl._search === "function") {
+      searchControl._search();
+    }
+  }
+
+  markMobileInteraction();
+}
+
 function openMobileMenu() {
   if (!mobileMenu || !mobileMenuBackdrop) return;
   mobileMenu.classList.add("is-open");
   mobileMenuBackdrop.classList.add("is-visible");
   mobileMenu.setAttribute("aria-hidden", "false");
   mobileMenuToggle.setAttribute("aria-expanded", "true");
+  markMobileInteraction();
   isMobileMenuOpen = true;
 }
 
@@ -526,6 +586,10 @@ function collapseBrowseMenuSection() {
   }
 }
 
+if (window.innerWidth <= 768) {
+  updateMobileTitleLayout();
+}
+
 function setupBrowseSidebar() {
   if (!browseSidebar || !browseSidebarToggle || !districtSelect || !localBodyTypeSelect || !localBodySelect) return;
 
@@ -535,8 +599,23 @@ function setupBrowseSidebar() {
     browseSidebarToggle.querySelector(".browse-sidebar__toggle-icon").textContent = isCollapsed ? "+" : "−";
   });
 
+  if (titleCard) {
+    titleCard.addEventListener("click", function (event) {
+      if (event.target.closest("a")) return;
+      handleTitleHomeAction();
+      markMobileInteraction();
+    });
+  }
+
+  map.on("click", markMobileInteraction);
+  map.on("zoom", markMobileInteraction);
+  map.on("move", markMobileInteraction);
+
   if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener("click", toggleMobileMenu);
+    mobileMenuToggle.addEventListener("click", function () {
+      markMobileInteraction();
+      toggleMobileMenu();
+    });
   }
 
   if (mobileMenuClose) {
@@ -547,9 +626,21 @@ function setupBrowseSidebar() {
     mobileMenuBackdrop.addEventListener("click", closeMobileMenu);
   }
 
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        triggerMobileSearch();
+      }
+    });
+  }
+
+  if (mobileSearchButton) {
+    mobileSearchButton.addEventListener("click", triggerMobileSearch);
+  }
+
   mobileAccordionButtons.forEach(button => {
     button.addEventListener("click", function () {
-      const panelId = this.getAttribute("data-target");
       const section = this.closest(".mobile-menu__section");
       const shouldOpen = !section.classList.contains("is-open");
 
@@ -565,6 +656,8 @@ function setupBrowseSidebar() {
       } else {
         setMobileAccordionState(section, false);
       }
+
+      markMobileInteraction();
     });
   });
 
@@ -667,6 +760,8 @@ function setupBrowseSidebar() {
   window.addEventListener("resize", function () {
     if (window.innerWidth > 768) {
       closeMobileMenu();
+    } else {
+      updateMobileTitleLayout();
     }
   });
 }
@@ -1252,7 +1347,7 @@ map.fitBounds(districtLayer.getBounds());
     districtLayer
 ]);
 
-  const searchControl = new L.Control.Search({
+  searchControl = new L.Control.Search({
 
     layer: searchableLayers,
 
@@ -1271,6 +1366,7 @@ map.fitBounds(districtLayer.getBounds());
   });
 
   searchControl.on('search:locationfound', function(e) {
+    markMobileInteraction();
 
     const props = e.layer.feature.properties;
   

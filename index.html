@@ -44,7 +44,20 @@
 
     <div class="mobile-menu__content">
       <section class="mobile-menu__section is-open">
-        <button class="mobile-menu__section-toggle" data-target="browseMobilePanel" type="button" aria-expanded="true">
+        <button class="mobile-menu__section-toggle" data-target="searchMobilePanel" type="button" aria-expanded="true">
+          <span>Search</span>
+          <span class="mobile-menu__section-icon">▾</span>
+        </button>
+        <div id="searchMobilePanel" class="mobile-menu__panel">
+          <div class="mobile-menu__search">
+            <input id="mobileSearchInput" type="text" placeholder="Search districts, assembly or lok sabha" />
+            <button id="mobileSearchButton" type="button">Search</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="mobile-menu__section">
+        <button class="mobile-menu__section-toggle" data-target="browseMobilePanel" type="button" aria-expanded="false">
           <span>Browse Kerala</span>
           <span class="mobile-menu__section-icon">▾</span>
         </button>
