@@ -469,14 +469,25 @@ body {
 }
 
 @media (max-width: 768px) {
+  :root {
+    --mobile-edge-spacing: 16px;
+    --mobile-menu-button-height: 36px;
+    --mobile-control-spacing: 12px;
+  }
+
   #title-card {
     top: auto;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    width: min(200px, calc(100vw - 24px));
+    left: 50%;
+    right: auto;
+    bottom: calc(
+      var(--mobile-edge-spacing) +
+      var(--mobile-menu-button-height) +
+      var(--mobile-control-spacing)
+    );
+    width: min(180px, calc(100vw - (2 * var(--mobile-edge-spacing))));
     padding: 8px 10px;
-    max-width: 200px;
+    max-width: 180px;
+    transform: translateX(-50%);
   }
 
   #title-card h2 {
@@ -491,10 +502,17 @@ body {
 
   .mobile-menu-toggle {
     display: inline-flex;
+    left: var(--mobile-edge-spacing);
+    bottom: var(--mobile-edge-spacing);
+    min-height: var(--mobile-menu-button-height);
   }
 
   .mobile-menu {
-    bottom: 58px;
+    bottom: calc(
+      var(--mobile-edge-spacing) +
+      var(--mobile-menu-button-height) +
+      var(--mobile-control-spacing)
+    );
   }
 
   .browse-sidebar {
