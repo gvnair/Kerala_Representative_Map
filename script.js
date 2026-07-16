@@ -197,6 +197,11 @@ let searchableLayers = L.layerGroup();
 // =====================================================
 
 const backButton = document.getElementById("backButton");
+const browseSidebar = document.getElementById("browseSidebar");
+const browseSidebarToggle = document.getElementById("browseSidebarToggle");
+const districtSelect = document.getElementById("districtSelect");
+const localBodyTypeSelect = document.getElementById("localBodyTypeSelect");
+const localBodySelect = document.getElementById("localBodySelect");
 
 function updateBackButton() {
 
@@ -238,6 +243,261 @@ backButton.onclick = function () {
 
     updateBackButton();
 };
+
+function populateDistrictOptions(lookup) {
+  if (!districtSelect) return;
+
+  const districts = Array.from(
+    new Set(
+      Object.values(lookup || {})
+        .filter(Boolean)
+        .map(item => item.district)
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  districtSelect.innerHTML = '<option value="">Select district</option>' +
+    districts.map(district => `<option value="${district}">${district}</option>`).join('');
+}
+
+function populateLocalBodyTypeOptions(district) {
+  if (!localBodyTypeSelect) return;
+
+  if (!district) {
+    localBodyTypeSelect.innerHTML = '<option value="">Choose a district first</option>';
+    localBodyTypeSelect.disabled = true;
+    return;
+  }
+
+  const typeOrder = [
+    "District Panchayat",
+    "Block Panchayat",
+    "Grama Panchayat",
+    "Municipality",
+    "Municipal Corporation"
+  ];
+
+  const types = Array.from(
+    new Set(
+      Object.values(lsgiLookup || {})
+        .map(item => item && item.lsgd_type)
+        .filter(Boolean)
+    )
+  );
+
+  const orderedTypes = types.sort((a, b) => {
+    const indexA = typeOrder.indexOf(a);
+    const indexB = typeOrder.indexOf(b);
+
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB;
+    }
+
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+
+    return a.localeCompare(b);
+  });
+
+  localBodyTypeSelect.innerHTML = '<option value="">Select local body type</option>' +
+    orderedTypes.map(type => `<option value="${type}">${type}</option>`).join('');
+  localBodyTypeSelect.disabled = false;
+}
+
+function populateLocalBodyOptions(district, type) {
+  if (!localBodySelect) return;
+
+  if (!district || !type) {
+    localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
+    localBodySelect.disabled = true;
+    return;
+  }
+
+  const entries = Object.values(lsgiLookup || {})
+    .filter(item => item && item.district === district && item.lsgd_type === type)
+    .sort((a, b) => a.lsgd_name.localeCompare(b.lsgd_name));
+
+  if (!entries.length) {
+    localBodySelect.innerHTML = '<option value="">No local bodies found</option>';
+    localBodySelect.disabled = true;
+    return;
+  }
+
+  localBodySelect.innerHTML = '<option value="">Select local body</option>' +
+    entries.map(item => `<option value="${item.sec_kerala_code}">${item.lsgd_name}</option>`).join('');
+  localBodySelect.disabled = false;
+}
+
+function findLayerByFeatureProperty(layerGroup, propertyName, value) {
+  if (!layerGroup || !layerGroup.getLayers) return null;
+
+  return layerGroup.getLayers().find(layer => {
+    const layerFeature = layer.feature || {};
+    const properties = layerFeature.properties || {};
+    return String(properties[propertyName] || "") === String(value);
+  }) || null;
+}
+
+async function activateDistrictSelection(layer, districtName) {
+  if (selectedDistrict && selectedDistrict !== layer && districtLayer) {
+    districtLayer.resetStyle(selectedDistrict);
+  }
+
+  selectedDistrict = layer;
+
+  if (districtSelect) {
+    districtSelect.value = districtName;
+  }
+
+  populateLocalBodyTypeOptions(districtName);
+  if (localBodySelect) {
+    localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
+    localBodySelect.disabled = true;
+  }
+  if (localBodyTypeSelect) {
+    localBodyTypeSelect.value = "";
+  }
+
+  applySelectionStyle(selectedDistrict, null, {
+    color: "#000",
+    weight: 3.2,
+    fillOpacity: 0.28
+  });
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [30, 30]
+  });
+
+  await loadLocalBodies(districtName);
+}
+
+async function activateLocalBodySelection(feature, layer, info) {
+  if (selectedLocalBody && selectedLocalBody !== layer) {
+    selectedLocalBody.setStyle(getNeutralStyle());
+  }
+
+  selectedLocalBody = layer;
+
+  if (!info) {
+    console.warn("Lookup not found");
+    return;
+  }
+
+  if (localBodySelect) {
+    localBodySelect.value = info.sec_kerala_code;
+  }
+
+  currentLocalBody = feature.properties.sec_kerala_code;
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [20, 20]
+  });
+
+  applySelectionStyle(layer, info.majority_front || info.largest_front || null, {
+    weight: 2.7,
+    fillOpacity: 0.28
+  });
+
+  await loadWardLayer(info.district, info.sec_kerala_code);
+
+  layer.bindPopup(`
+
+      <div style="font-size:14px;">
+
+          <strong style="font-size:16px;">
+              ${info.lsgd_name}
+          </strong>
+
+          <br><br>
+
+          <strong>Type:</strong>
+          ${info.lsgd_type}<br>
+
+          <strong>District:</strong>
+          ${info.district}<br>
+
+          <strong>Total Wards:</strong>
+          ${info.number_of_wards}<br>
+
+          <hr>
+
+          <strong>Majority Front:</strong>
+          ${info.majority_front}<br>
+
+          <strong>Largest Front:</strong>
+          ${info.largest_front}<br>
+
+          <strong>Majority:</strong>
+          ${info.majority_number}<br>
+
+          <hr>
+
+          <strong>LDF:</strong> ${info.LDF}<br>
+          <strong>UDF:</strong> ${info.UDF}<br>
+          <strong>NDA:</strong> ${info.NDA}<br>
+          <strong>OTH:</strong> ${info.OTH}
+
+      </div>
+
+  `).openPopup();
+}
+
+function setupBrowseSidebar() {
+  if (!browseSidebar || !browseSidebarToggle || !districtSelect || !localBodyTypeSelect || !localBodySelect) return;
+
+  browseSidebarToggle.addEventListener("click", function () {
+    const isCollapsed = browseSidebar.classList.toggle("is-collapsed");
+    browseSidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+    browseSidebarToggle.querySelector(".browse-sidebar__toggle-icon").textContent = isCollapsed ? "+" : "−";
+  });
+
+  districtSelect.addEventListener("change", async function () {
+    const districtName = this.value;
+
+    if (!districtName) {
+      localBodyTypeSelect.innerHTML = '<option value="">Choose a district first</option>';
+      localBodyTypeSelect.disabled = true;
+      localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
+      localBodySelect.disabled = true;
+      return;
+    }
+
+    populateLocalBodyTypeOptions(districtName);
+    localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
+    localBodySelect.disabled = true;
+
+    const districtLayerMatch = findLayerByFeatureProperty(districtLayer, "district", districtName);
+    if (districtLayerMatch) {
+      await activateDistrictSelection(districtLayerMatch, districtName);
+    }
+  });
+
+  localBodyTypeSelect.addEventListener("change", function () {
+    const districtName = districtSelect.value;
+    const typeName = this.value;
+
+    populateLocalBodyOptions(districtName, typeName);
+  });
+
+  localBodySelect.addEventListener("change", async function () {
+    const secCode = this.value;
+
+    if (!secCode) return;
+
+    const info = Object.values(lsgiLookup || {}).find(item => item && item.sec_kerala_code === secCode);
+
+    if (!info) return;
+
+    if (!localBodyLayer) {
+      await loadLocalBodies(info.district);
+    }
+
+    const layerMatch = findLayerByFeatureProperty(localBodyLayer, "sec_kerala_code", secCode);
+    if (layerMatch) {
+      await activateLocalBodySelection(layerMatch.feature, layerMatch, info);
+    }
+  });
+}
 
 // =====================================================
 // LOCAL BODY LOADER
@@ -304,78 +564,7 @@ localBodyLayer = L.geoJSON(geojson, {
     }
 
    layer.on("click", async function() {
-    if (selectedLocalBody && selectedLocalBody !== layer) {
-      selectedLocalBody.setStyle(getNeutralStyle({
-        color: "#555",
-        weight: 1.3,
-        fillOpacity: 0.14
-      }));
-    }
-
-    selectedLocalBody = layer;
-
-        if (!info) {
-
-          console.warn("Lookup not found");
-            return;
-        }
-        map.fitBounds(layer.getBounds(), {
-          padding: [20,20]
-        });
-        
-      currentLocalBody = feature.properties.sec_kerala_code;
-
-        applySelectionStyle(layer, info.majority_front || info.largest_front || null, {
-          weight: 2.7,
-          fillOpacity: 0.28
-        });
-        
-        await loadWardLayer(
-          info.district,
-          info.sec_kerala_code
-         );
-
-        layer.bindPopup(`
-
-            <div style="font-size:14px;">
-
-                <strong style="font-size:16px;">
-                    ${info.lsgd_name}
-                </strong>
-
-                <br><br>
-
-                <strong>Type:</strong>
-                ${info.lsgd_type}<br>
-
-                <strong>District:</strong>
-                ${info.district}<br>
-
-                <strong>Total Wards:</strong>
-                ${info.number_of_wards}<br>
-
-                <hr>
-
-                <strong>Majority Front:</strong>
-                ${info.majority_front}<br>
-
-                <strong>Largest Front:</strong>
-                ${info.largest_front}<br>
-
-                <strong>Majority:</strong>
-                ${info.majority_number}<br>
-
-                <hr>
-
-                <strong>LDF:</strong> ${info.LDF}<br>
-                <strong>UDF:</strong> ${info.UDF}<br>
-                <strong>NDA:</strong> ${info.NDA}<br>
-                <strong>OTH:</strong> ${info.OTH}
-
-            </div>
-
-        `).openPopup();
-
+        await activateLocalBodySelection(feature, layer, info);
     });
     
    
@@ -547,6 +736,8 @@ Promise.all([
 .then(([lsData, acData, districtData, lookup]) => {
 
   lsgiLookup = lookup;
+  populateDistrictOptions(lookup);
+  setupBrowseSidebar();
 
   // =====================================================
   // LOK SABHA LAYER
@@ -755,30 +946,7 @@ Promise.all([
         },
 
        click: async function () {
-
-    // Reset the previously selected district
-    if (selectedDistrict) {
-        districtLayer.resetStyle(selectedDistrict);
-    }
-
-    // Store the newly selected district
-    selectedDistrict = layer;
-
-    // Highlight it without applying party colours
-    applySelectionStyle(selectedDistrict, null, {
-        color: "#000",
-        weight: 3.2,
-        fillOpacity: 0.28
-    });
-
-    // Zoom into the district
-    map.fitBounds(layer.getBounds(), {
-        padding: [30,30]
-    });
-
-    // Load the local bodies
-    await loadLocalBodies(p.district);
-
+    await activateDistrictSelection(layer, p.district);
 }
 }
         

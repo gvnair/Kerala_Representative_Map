@@ -150,6 +150,83 @@ body {
 
 }
 
+.browse-sidebar {
+    position: absolute;
+    top: 120px;
+    left: 20px;
+    z-index: 1000;
+    width: min(320px, calc(100vw - 40px));
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.browse-sidebar__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: none;
+    background: #f7f7f7;
+    color: #222;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.browse-sidebar__toggle-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.browse-sidebar__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px 14px;
+}
+
+.browse-sidebar.is-collapsed .browse-sidebar__body {
+    display: none;
+}
+
+.browse-sidebar__section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.browse-sidebar__section label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #444;
+}
+
+.browse-sidebar__section select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #222;
+    background: white;
+}
+
+.browse-sidebar__section select:disabled {
+    background: #f2f2f2;
+    color: #777;
+}
+
+@media (max-width: 768px) {
+    .browse-sidebar {
+        top: 210px;
+        left: 12px;
+        width: calc(100vw - 24px);
+    }
+}
+
 #title-card h2{
 
     margin:0;

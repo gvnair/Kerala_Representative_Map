@@ -39,6 +39,36 @@
 
 </div>
 
+  <div id="browseSidebar" class="browse-sidebar">
+    <button id="browseSidebarToggle" class="browse-sidebar__toggle" type="button" aria-expanded="true" aria-controls="browseSidebarBody">
+      <span>Browse Kerala</span>
+      <span class="browse-sidebar__toggle-icon">−</span>
+    </button>
+
+    <div id="browseSidebarBody" class="browse-sidebar__body">
+      <div class="browse-sidebar__section">
+        <label for="districtSelect">District</label>
+        <select id="districtSelect">
+          <option value="">Select district</option>
+        </select>
+      </div>
+
+      <div class="browse-sidebar__section">
+        <label for="localBodyTypeSelect">Local Body Type</label>
+        <select id="localBodyTypeSelect" disabled>
+          <option value="">Choose a district first</option>
+        </select>
+      </div>
+
+      <div class="browse-sidebar__section">
+        <label for="localBodySelect">Local Body</label>
+        <select id="localBodySelect" disabled>
+          <option value="">Choose a type first</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
   <div id="map"></div>
 
   <div id="authorCard">

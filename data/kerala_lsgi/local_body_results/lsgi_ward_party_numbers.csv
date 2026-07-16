@@ -145,12 +145,12 @@ B13143,Kuthuparamba,Kannur,Block Panchayat,15,12,3,0,0,8,LDF,LDF
 B13144,Panoor,Kannur,Block Panchayat,14,14,0,0,0,8,LDF,LDF
 B13145,Iritty,Kannur,Block Panchayat,14,8,6,0,0,8,LDF,LDF
 B13146,Peravoor,Kannur,Block Panchayat,14,5,9,0,0,8,UDF,UDF
-B14147,Karadka,Kasargod,Block Panchayat,14,9,3,2,0,8,LDF,LDF
-B14148,Manjeshwar,Kasargod,Block Panchayat,16,2,11,3,0,9,UDF,UDF
-B14149,Kasaragod,Kasargod,Block Panchayat,18,0,16,2,0,10,UDF,UDF
-B14150,Kanhangad,Kasargod,Block Panchayat,15,8,7,0,0,8,LDF,LDF
-B14151,Parappa,Kasargod,Block Panchayat,15,8,7,0,0,8,LDF,LDF
-B14152,Nileswar,Kasargod,Block Panchayat,14,8,6,0,0,8,LDF,LDF
+B14147,Karadka,Kasaragod,Block Panchayat,14,9,3,2,0,8,LDF,LDF
+B14148,Manjeshwar,Kasaragod,Block Panchayat,16,2,11,3,0,9,UDF,UDF
+B14149,Kasaragod,Kasaragod,Block Panchayat,18,0,16,2,0,10,UDF,UDF
+B14150,Kanhangad,Kasaragod,Block Panchayat,15,8,7,0,0,8,LDF,LDF
+B14151,Parappa,Kasaragod,Block Panchayat,15,8,7,0,0,8,LDF,LDF
+B14152,Nileswar,Kasaragod,Block Panchayat,14,8,6,0,0,8,LDF,LDF
 C01001,Thiruvananthapuram,Thiruvananthapuram,Municipal Corporation,101,29,20,50,2,51,NDA,No Majority
 C02002,Kollam,Kollam,Municipal Corporation,56,16,27,12,1,29,UDF,No Majority
 C07003,Kochi,Ernakulam,Municipal Corporation,76,20,46,6,4,39,UDF,UDF
@@ -170,7 +170,7 @@ D10001,Malappuram,Malappuram,District Panchayat,33,0,33,0,0,17,UDF,UDF
 D11001,Kozhikkode,Kozhikkode,District Panchayat,28,13,14,0,1,15,UDF,No Majority
 D12001,Wayanad,Wayanad,District Panchayat,34,2,15,0,0,18,UDF,No Majority
 D13001,Kannur,Kannur,District Panchayat,25,18,7,0,0,13,LDF,LDF
-D14001,Kasargod,Kasargod,District Panchayat,18,9,8,1,0,10,LDF,No Majority
+D14001,Kasaragod,Kasaragod,District Panchayat,18,9,8,1,0,10,LDF,No Majority
 G01001,Parassala,Thiruvananthapuram,Grama Panchayat,24,9,10,3,2,13,UDF,No Majority
 G01002,Karode,Thiruvananthapuram,Grama Panchayat,20,7,9,2,2,11,UDF,No Majority
 G01003,Kulathoor,Thiruvananthapuram,Grama Panchayat,21,6,13,0,2,11,UDF,UDF
@@ -1074,44 +1074,44 @@ G13078,Muzhakkunnu,Kannur,Grama Panchayat,16,8,5,2,1,9,LDF,No Majority
 G13079,Kolayad,Kannur,Grama Panchayat,15,8,7,0,0,8,LDF,LDF
 G13080,Malur,Kannur,Grama Panchayat,16,11,4,0,1,9,LDF,LDF
 G13081,Peravoor,Kannur,Grama Panchayat,17,10,6,1,0,9,LDF,LDF
-G14001,Kumbadaje,Kasargod,Grama Panchayat,14,1,5,7,1,8,NDA,No Majority
-G14002,Bellur,Kasargod,Grama Panchayat,14,2,0,6,6,8,TIE,TIE
-G14003,Karadka,Kasargod,Grama Panchayat,16,3,4,8,1,9,NDA,No Majority
-G14004,Muliyar,Kasargod,Grama Panchayat,18,3,12,3,0,10,UDF,UDF
-G14005,Delampady,Kasargod,Grama Panchayat,17,5,4,5,3,9,TIE,TIE
-G14006,Bedadka,Kasargod,Grama Panchayat,19,17,2,0,0,10,LDF,LDF
-G14007,Kuttikkol,Kasargod,Grama Panchayat,17,10,5,2,0,9,LDF,LDF
-G14008,Manjeshwar,Kasargod,Grama Panchayat,24,0,13,6,5,13,UDF,UDF
-G14009,Vorkady,Kasargod,Grama Panchayat,18,4,10,2,2,10,UDF,UDF
-G14010,Meenja,Kasargod,Grama Panchayat,17,1,9,7,0,9,UDF,UDF
-G14011,Mangalpady,Kasargod,Grama Panchayat,24,2,19,3,0,13,UDF,UDF
-G14012,Paivalike,Kasargod,Grama Panchayat,21,5,7,5,4,11,UDF,No Majority
-G14013,Puthige,Kasargod,Grama Panchayat,16,5,5,2,4,9,TIE,TIE
-G14014,Enmakaje,Kasargod,Grama Panchayat,18,4,8,6,0,10,UDF,No Majority
-G14015,Kumbla,Kasargod,Grama Panchayat,24,3,15,5,1,13,UDF,UDF
-G14016,Badiadka,Kasargod,Grama Panchayat,21,1,10,10,0,11,TIE,TIE
-G14017,Mogralputhur,Kasargod,Grama Panchayat,17,2,8,4,3,9,UDF,No Majority
-G14018,Madhur,Kasargod,Grama Panchayat,24,0,9,15,0,13,NDA,NDA
-G14019,Chemnad,Kasargod,Grama Panchayat,24,4,18,1,1,13,UDF,UDF
-G14020,Chengala,Kasargod,Grama Panchayat,24,4,19,0,1,13,UDF,UDF
-G14021,Udma,Kasargod,Grama Panchayat,23,11,12,0,0,12,UDF,UDF
-G14022,Pallikkara,Kasargod,Grama Panchayat,24,12,11,1,0,13,LDF,No Majority
-G14023,Ajanur,Kasargod,Grama Panchayat,24,12,8,4,0,13,LDF,No Majority
-G14024,Pullur-Periya,Kasargod,Grama Panchayat,19,9,9,1,0,10,TIE,TIE
-G14025,Madikai,Kasargod,Grama Panchayat,16,15,0,1,0,9,LDF,LDF
-G14026,Kodom -Belur,Kasargod,Grama Panchayat,21,15,4,1,1,11,LDF,LDF
-G14027,Kallar,Kasargod,Grama Panchayat,15,1,12,1,1,8,UDF,UDF
-G14028,Panathady,Kasargod,Grama Panchayat,17,8,5,3,1,9,LDF,No Majority
-G14029,Balal,Kasargod,Grama Panchayat,17,2,14,0,1,9,UDF,UDF
-G14030,Kinanoor - Karindalam,Kasargod,Grama Panchayat,19,14,5,0,0,10,LDF,LDF
-G14031,West Eleri,Kasargod,Grama Panchayat,19,10,9,0,0,10,LDF,LDF
-G14032,East Eleri,Kasargod,Grama Panchayat,18,2,11,0,5,10,UDF,UDF
-G14033,Kayyur -  Cheemeni,Kasargod,Grama Panchayat,17,16,1,0,0,9,LDF,LDF
-G14034,Cheruvathur,Kasargod,Grama Panchayat,18,13,5,0,0,10,LDF,LDF
-G14035,Valiyaparamba,Kasargod,Grama Panchayat,14,6,8,0,0,8,UDF,UDF
-G14036,Padne,Kasargod,Grama Panchayat,16,9,7,0,0,9,LDF,LDF
-G14037,Pilicode,Kasargod,Grama Panchayat,18,18,0,0,0,10,LDF,LDF
-G14038,Trikaripur,Kasargod,Grama Panchayat,23,3,20,0,0,12,UDF,UDF
+G14001,Kumbadaje,Kasaragod,Grama Panchayat,14,1,5,7,1,8,NDA,No Majority
+G14002,Bellur,Kasaragod,Grama Panchayat,14,2,0,6,6,8,TIE,TIE
+G14003,Karadka,Kasaragod,Grama Panchayat,16,3,4,8,1,9,NDA,No Majority
+G14004,Muliyar,Kasaragod,Grama Panchayat,18,3,12,3,0,10,UDF,UDF
+G14005,Delampady,Kasaragod,Grama Panchayat,17,5,4,5,3,9,TIE,TIE
+G14006,Bedadka,Kasaragod,Grama Panchayat,19,17,2,0,0,10,LDF,LDF
+G14007,Kuttikkol,Kasaragod,Grama Panchayat,17,10,5,2,0,9,LDF,LDF
+G14008,Manjeshwar,Kasaragod,Grama Panchayat,24,0,13,6,5,13,UDF,UDF
+G14009,Vorkady,Kasaragod,Grama Panchayat,18,4,10,2,2,10,UDF,UDF
+G14010,Meenja,Kasaragod,Grama Panchayat,17,1,9,7,0,9,UDF,UDF
+G14011,Mangalpady,Kasaragod,Grama Panchayat,24,2,19,3,0,13,UDF,UDF
+G14012,Paivalike,Kasaragod,Grama Panchayat,21,5,7,5,4,11,UDF,No Majority
+G14013,Puthige,Kasaragod,Grama Panchayat,16,5,5,2,4,9,TIE,TIE
+G14014,Enmakaje,Kasaragod,Grama Panchayat,18,4,8,6,0,10,UDF,No Majority
+G14015,Kumbla,Kasaragod,Grama Panchayat,24,3,15,5,1,13,UDF,UDF
+G14016,Badiadka,Kasaragod,Grama Panchayat,21,1,10,10,0,11,TIE,TIE
+G14017,Mogralputhur,Kasaragod,Grama Panchayat,17,2,8,4,3,9,UDF,No Majority
+G14018,Madhur,Kasaragod,Grama Panchayat,24,0,9,15,0,13,NDA,NDA
+G14019,Chemnad,Kasaragod,Grama Panchayat,24,4,18,1,1,13,UDF,UDF
+G14020,Chengala,Kasaragod,Grama Panchayat,24,4,19,0,1,13,UDF,UDF
+G14021,Udma,Kasaragod,Grama Panchayat,23,11,12,0,0,12,UDF,UDF
+G14022,Pallikkara,Kasaragod,Grama Panchayat,24,12,11,1,0,13,LDF,No Majority
+G14023,Ajanur,Kasaragod,Grama Panchayat,24,12,8,4,0,13,LDF,No Majority
+G14024,Pullur-Periya,Kasaragod,Grama Panchayat,19,9,9,1,0,10,TIE,TIE
+G14025,Madikai,Kasaragod,Grama Panchayat,16,15,0,1,0,9,LDF,LDF
+G14026,Kodom -Belur,Kasaragod,Grama Panchayat,21,15,4,1,1,11,LDF,LDF
+G14027,Kallar,Kasaragod,Grama Panchayat,15,1,12,1,1,8,UDF,UDF
+G14028,Panathady,Kasaragod,Grama Panchayat,17,8,5,3,1,9,LDF,No Majority
+G14029,Balal,Kasaragod,Grama Panchayat,17,2,14,0,1,9,UDF,UDF
+G14030,Kinanoor - Karindalam,Kasaragod,Grama Panchayat,19,14,5,0,0,10,LDF,LDF
+G14031,West Eleri,Kasaragod,Grama Panchayat,19,10,9,0,0,10,LDF,LDF
+G14032,East Eleri,Kasaragod,Grama Panchayat,18,2,11,0,5,10,UDF,UDF
+G14033,Kayyur -  Cheemeni,Kasaragod,Grama Panchayat,17,16,1,0,0,9,LDF,LDF
+G14034,Cheruvathur,Kasaragod,Grama Panchayat,18,13,5,0,0,10,LDF,LDF
+G14035,Valiyaparamba,Kasaragod,Grama Panchayat,14,6,8,0,0,8,UDF,UDF
+G14036,Padne,Kasaragod,Grama Panchayat,16,9,7,0,0,9,LDF,LDF
+G14037,Pilicode,Kasaragod,Grama Panchayat,18,18,0,0,0,10,LDF,LDF
+G14038,Trikaripur,Kasaragod,Grama Panchayat,23,3,20,0,0,12,UDF,UDF
 M01001,Neyyattinkara,Thiruvananthapuram,Municipality,46,25,12,7,2,24,LDF,LDF
 M01002,Nedumangad,Thiruvananthapuram,Municipality,42,29,10,3,0,22,LDF,LDF
 M01003,Attingal,Thiruvananthapuram,Municipality,32,16,7,7,2,17,LDF,No Majority
@@ -1196,6 +1196,6 @@ M13083,Iritty,Kannur,Municipality,34,16,13,4,1,18,LDF,No Majority
 M13084,Panoor,Kannur,Municipality,41,14,23,3,1,21,UDF,UDF
 M13085,Sreekandapuram,Kannur,Municipality,31,13,18,0,0,16,UDF,UDF
 M13086,Anthoor,Kannur,Municipality,29,29,0,0,0,15,LDF,LDF
-M14058,Kanhangad,Kasargod,Municipality,47,20,20,4,3,24,TIE,TIE
-M14059,Kasaragod,Kasargod,Municipality,39,1,24,12,2,20,UDF,UDF
-M14060,Nileshwar,Kasargod,Municipality,34,20,13,0,1,18,LDF,LDF
+M14058,Kanhangad,Kasaragod,Municipality,47,20,20,4,3,24,TIE,TIE
+M14059,Kasaragod,Kasaragod,Municipality,39,1,24,12,2,20,UDF,UDF
+M14060,Nileshwar,Kasaragod,Municipality,34,20,13,0,1,18,LDF,LDF
