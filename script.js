@@ -203,9 +203,6 @@ const districtSelect = document.getElementById("districtSelect");
 const localBodyTypeSelect = document.getElementById("localBodyTypeSelect");
 const localBodySelect = document.getElementById("localBodySelect");
 const mobileMenuToggle = document.getElementById("mobileMenuToggle");
-const mobileHomeButton = document.getElementById("mobileHomeButton");
-const mobileLocateButton = document.getElementById("mobileLocateButton");
-const mobileShareButton = document.getElementById("mobileShareButton");
 const mobileMenu = document.getElementById("mobileMenu");
 const mobileMenuBackdrop = document.getElementById("mobileMenuBackdrop");
 const mobileMenuClose = document.getElementById("mobileMenuClose");
@@ -218,14 +215,9 @@ const titleCard = document.getElementById("title-card");
 const titleHeading = titleCard ? titleCard.querySelector("h2") : null;
 const mobileSearchInput = document.getElementById("mobileSearchInput");
 const mobileSearchButton = document.getElementById("mobileSearchButton");
-const mobileToolbar = document.getElementById("mobileToolbar");
-const mobileMessage = document.getElementById("mobileMessage");
 let isMobileMenuOpen = false;
 let hasInteractedWithMobileUI = false;
 let searchControl = null;
-let mobileLocationMarker = null;
-let mobileToolbarHideTimer = null;
-let mobileToolbarHidden = false;
 
 function updateBackButton() {
 
@@ -452,7 +444,6 @@ async function activateLocalBodySelection(feature, layer, info) {
 
   if (window.innerWidth <= 768) {
     closeMobileMenu();
-    showMobileToolbar();
   }
 
   await loadWardLayer(info.district, info.sec_kerala_code);
@@ -499,52 +490,6 @@ async function activateLocalBodySelection(feature, layer, info) {
   `).openPopup();
 }
 
-function updateMobileTitleLayout() {
-  if (!titleCard) return;
-  const titleHeight = titleCard.offsetHeight || 70;
-  document.documentElement.style.setProperty("--mobile-title-height", `${titleHeight}px`);
-}
-
-function showMobileMessage(message) {
-  if (!mobileMessage) return;
-  mobileMessage.textContent = message;
-  mobileMessage.classList.add("is-visible");
-  clearTimeout(showMobileMessage.timeoutId);
-  showMobileMessage.timeoutId = setTimeout(() => {
-    mobileMessage.classList.remove("is-visible");
-  }, 1800);
-}
-
-function pulseMobileToolbarButton(button) {
-  if (!button) return;
-  button.classList.add("is-pressed");
-  if (navigator.vibrate) {
-    navigator.vibrate(10);
-  }
-  setTimeout(() => button.classList.remove("is-pressed"), 180);
-}
-
-function showMobileToolbar() {
-  if (!mobileToolbar || window.innerWidth > 768) return;
-  mobileToolbar.classList.remove("mobile-toolbar--hidden");
-  mobileToolbarHidden = false;
-}
-
-function hideMobileToolbar() {
-  if (!mobileToolbar || window.innerWidth > 768) return;
-  mobileToolbar.classList.add("mobile-toolbar--hidden");
-  mobileToolbarHidden = true;
-}
-
-function scheduleMobileToolbarHide() {
-  if (window.innerWidth > 768) return;
-  clearTimeout(mobileToolbarHideTimer);
-  showMobileToolbar();
-  mobileToolbarHideTimer = setTimeout(() => {
-    hideMobileToolbar();
-  }, 3000);
-}
-
 function compactMobileTitle() {
   if (!titleCard || hasInteractedWithMobileUI) return;
 
@@ -555,7 +500,6 @@ function compactMobileTitle() {
     titleHeading.textContent = "Kerala Map";
   }
 
-  requestAnimationFrame(updateMobileTitleLayout);
 }
 
 function markMobileInteraction() {
@@ -570,60 +514,6 @@ function handleTitleHomeAction() {
   map.fitBounds(districtLayer.getBounds(), {
     padding: [20, 20]
   });
-  showMobileToolbar();
-}
-
-function handleMobileLocate() {
-  if (!navigator.geolocation) {
-    showMobileMessage("Location services are not available on this device.");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const latlng = [position.coords.latitude, position.coords.longitude];
-      if (mobileLocationMarker) {
-        map.removeLayer(mobileLocationMarker);
-      }
-
-      mobileLocationMarker = L.marker(latlng, {
-        icon: L.divIcon({
-          html: '📍',
-          className: 'mobile-location-marker',
-          iconSize: [24, 24]
-        })
-      }).addTo(map);
-
-      map.flyTo(latlng, 13, { duration: 0.8 });
-      showMobileMessage("Location ready.");
-    },
-    () => {
-      showMobileMessage("Location access was denied.");
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000
-    }
-  );
-}
-
-function handleMobileShare() {
-  const shareUrl = new URL(window.location.href);
-
-  if (selectedDistrict && selectedDistrict.feature && selectedDistrict.feature.properties && selectedDistrict.feature.properties.district) {
-    shareUrl.searchParams.set("district", selectedDistrict.feature.properties.district);
-  } else if (currentLocalBody) {
-    shareUrl.searchParams.set("localBody", currentLocalBody);
-  }
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(shareUrl.toString()).then(() => {
-      showMobileMessage("Link copied.");
-    });
-  } else {
-    window.prompt("Copy this link:", shareUrl.toString());
-    showMobileMessage("Link copied.");
-  }
 }
 
 function triggerMobileSearch() {
@@ -649,7 +539,6 @@ function openMobileMenu() {
   mobileMenuBackdrop.classList.add("is-visible");
   mobileMenu.setAttribute("aria-hidden", "false");
   mobileMenuToggle.setAttribute("aria-expanded", "true");
-  showMobileToolbar();
   markMobileInteraction();
   isMobileMenuOpen = true;
 }
@@ -687,10 +576,6 @@ function collapseBrowseMenuSection() {
   }
 }
 
-if (window.innerWidth <= 768) {
-  updateMobileTitleLayout();
-}
-
 function setupBrowseSidebar() {
   if (!browseSidebar || !browseSidebarToggle || !districtSelect || !localBodyTypeSelect || !localBodySelect) return;
 
@@ -714,30 +599,8 @@ function setupBrowseSidebar() {
 
   if (mobileMenuToggle) {
     mobileMenuToggle.addEventListener("click", function () {
-      pulseMobileToolbarButton(this);
       markMobileInteraction();
       toggleMobileMenu();
-    });
-  }
-
-  if (mobileHomeButton) {
-    mobileHomeButton.addEventListener("click", function () {
-      pulseMobileToolbarButton(this);
-      handleTitleHomeAction();
-    });
-  }
-
-  if (mobileLocateButton) {
-    mobileLocateButton.addEventListener("click", function () {
-      pulseMobileToolbarButton(this);
-      handleMobileLocate();
-    });
-  }
-
-  if (mobileShareButton) {
-    mobileShareButton.addEventListener("click", function () {
-      pulseMobileToolbarButton(this);
-      handleMobileShare();
     });
   }
 
@@ -880,18 +743,9 @@ function setupBrowseSidebar() {
     });
   });
 
-  map.on("movestart zoomstart", scheduleMobileToolbarHide);
-  map.on("click", function () {
-    showMobileToolbar();
-    markMobileInteraction();
-  });
-
   window.addEventListener("resize", function () {
     if (window.innerWidth > 768) {
       closeMobileMenu();
-      showMobileToolbar();
-    } else {
-      updateMobileTitleLayout();
     }
   });
 }

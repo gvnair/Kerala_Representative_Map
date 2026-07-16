@@ -31,14 +31,10 @@
     <small>District → Local Body → Ward</small>
   </div>
 
-  <div id="mobileToolbar" class="mobile-toolbar" role="toolbar" aria-label="Mobile map controls">
-    <button id="mobileHomeButton" class="mobile-toolbar__button" type="button" aria-label="Home">🏠</button>
-    <button id="mobileLocateButton" class="mobile-toolbar__button" type="button" aria-label="Locate me">📍</button>
-    <button id="mobileMenuToggle" class="mobile-toolbar__button mobile-toolbar__button--menu" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">☰</button>
-    <button id="mobileShareButton" class="mobile-toolbar__button" type="button" aria-label="Share">🔗</button>
-  </div>
-
-  <div id="mobileMessage" class="mobile-message" aria-live="polite"></div>
+  <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="mobileMenu">
+    <span class="mobile-menu-toggle__icon">☰</span>
+    <span>Menu</span>
+  </button>
 
   <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
     <div class="mobile-menu__header">
