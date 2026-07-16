@@ -26,18 +26,113 @@
 <body>
 
   <div id="title-card">
-
     <h2>Kerala Representatives Map</h2>
+    <p>Interactive Election Explorer</p>
+    <small>District → Local Body → Ward</small>
+  </div>
 
-    <p>
-        Interactive Election Explorer
-    </p>
+  <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="mobileMenu">
+    <span class="mobile-menu-toggle__icon">☰</span>
+    <span>Menu</span>
+  </button>
 
-    <small>
-        District → Local Body → Ward
-    </small>
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+    <div class="mobile-menu__header">
+      <h3>Explore Kerala</h3>
+      <button id="mobileMenuClose" class="mobile-menu__close" type="button" aria-label="Close menu">✕</button>
+    </div>
 
-</div>
+    <div class="mobile-menu__content">
+      <section class="mobile-menu__section is-open">
+        <button class="mobile-menu__section-toggle" data-target="browseMobilePanel" type="button" aria-expanded="true">
+          <span>Browse Kerala</span>
+          <span class="mobile-menu__section-icon">▾</span>
+        </button>
+        <div id="browseMobilePanel" class="mobile-menu__panel">
+          <div class="browse-sidebar__section">
+            <label for="mobileDistrictSelect">District</label>
+            <select id="mobileDistrictSelect">
+              <option value="">Select district</option>
+            </select>
+          </div>
+
+          <div class="browse-sidebar__section">
+            <label for="mobileLocalBodyTypeSelect">Local Body Type</label>
+            <select id="mobileLocalBodyTypeSelect" disabled>
+              <option value="">Choose a district first</option>
+            </select>
+          </div>
+
+          <div class="browse-sidebar__section">
+            <label for="mobileLocalBodySelect">Local Body</label>
+            <select id="mobileLocalBodySelect" disabled>
+              <option value="">Choose a type first</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="mobile-menu__section">
+        <button class="mobile-menu__section-toggle" data-target="legendMobilePanel" type="button" aria-expanded="false">
+          <span>Legend</span>
+          <span class="mobile-menu__section-icon">▾</span>
+        </button>
+        <div id="legendMobilePanel" class="mobile-menu__panel">
+          <div class="mobile-menu__legend">
+            <div class="mobile-menu__legend-heading">Political Alliance Colours</div>
+            <div class="mobile-menu__legend-row"><span class="legend-color" style="background:#e53935;"></span><span>LDF</span></div>
+            <div class="mobile-menu__legend-row"><span class="legend-color" style="background:#1e88e5;"></span><span>UDF</span></div>
+            <div class="mobile-menu__legend-row"><span class="legend-color" style="background:#fb8c00;"></span><span>NDA</span></div>
+            <div class="mobile-menu__legend-row"><span class="district-line"></span><span>District Boundary</span></div>
+            <p class="mobile-menu__hint">Alliance colours apply only to the selected feature while the map stays neutral by default.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mobile-menu__section">
+        <button class="mobile-menu__section-toggle" data-target="aboutMobilePanel" type="button" aria-expanded="false">
+          <span>About</span>
+          <span class="mobile-menu__section-icon">▾</span>
+        </button>
+        <div id="aboutMobilePanel" class="mobile-menu__panel mobile-menu__panel--text">
+          <h4>Kerala Representatives Map</h4>
+          <p><strong>Version:</strong> 1.0</p>
+          <p>Interactive election explorer for Kerala, from district level down to individual wards.</p>
+          <h4>Data Sources</h4>
+          <ul>
+            <li>Kerala State Election Commission</li>
+            <li>Election Commission of India</li>
+            <li>Delimitation Commission, Kerala</li>
+          </ul>
+          <h4>Highlights</h4>
+          <ul>
+            <li>Interactive district, local body and ward navigation</li>
+            <li>Dynamic GeoJSON loading for faster performance</li>
+            <li>Ward-level representative and election results</li>
+            <li>Client-side caching for seamless navigation</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="mobile-menu__section">
+        <button class="mobile-menu__section-toggle" data-target="contactMobilePanel" type="button" aria-expanded="false">
+          <span>Contact</span>
+          <span class="mobile-menu__section-icon">▾</span>
+        </button>
+        <div id="contactMobilePanel" class="mobile-menu__panel mobile-menu__panel--text">
+          <div class="mobile-menu__contact-card">
+            <h4>Created by</h4>
+            <p><strong>Name:</strong> Gokul Nair</p>
+            <p><strong>Email:</strong> <a href="mailto:gokulv97@hotmail.com">gokulv97@hotmail.com</a></p>
+            <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/gokul-venu/" target="_blank">gokul-venu</a></p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/gvnair" target="_blank">gvnair</a></p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
 
   <div id="browseSidebar" class="browse-sidebar">
     <button id="browseSidebarToggle" class="browse-sidebar__toggle" type="button" aria-expanded="true" aria-controls="browseSidebarBody">
@@ -72,137 +167,61 @@
   <div id="map"></div>
 
   <div id="authorCard">
-
     <h4>Created by</h4>
-
     <p>Gokul Nair</p>
-
     <hr>
-
-    <a href="mailto:gokulv97@hotmail.com">
-        Email
-    </a>
-
+    <a href="mailto:gokulv97@hotmail.com">Email</a>
     |
-
-    <a href="https://www.linkedin.com/in/gokul-venu/"
-       target="_blank">
-        LinkedIn
-    </a>
-
+    <a href="https://www.linkedin.com/in/gokul-venu/" target="_blank">LinkedIn</a>
     |
-
-    <a href="https://github.com/gvnair"
-       target="_blank">
-        GitHub
-    </a>
-
-</div>
+    <a href="https://github.com/gvnair" target="_blank">GitHub</a>
+  </div>
 
   <button id="aboutButton">ℹ About</button>
 
-<div id="aboutPanel" class="hidden">
-
+  <div id="aboutPanel" class="hidden">
     <h3>Kerala Representatives Map</h3>
-
     <p><strong>Version:</strong> 1.0</p>
-
-    <p>
-        Interactive election explorer for Kerala,
-        from district level down to individual wards.
-    </p>
+    <p>Interactive election explorer for Kerala, from district level down to individual wards.</p>
 
     <hr>
 
     <h4>Created by</h4>
-
     <p>Gokul Nair</p>
+    <p>Email: gokulv97@hotmail.com</p>
+    <p>LinkedIn: linkedin.com/in/gokul_venu/</p>
 
     <hr>
 
     <h4>Data Sources</h4>
-
     <ul>
-        <li>Kerala State Election Commission</li>
-        <li>Election Commission of India</li>
-        <li>Delimitation Commission, Kerala</li>
+      <li>Kerala State Election Commission</li>
+      <li>Election Commission of India</li>
+      <li>Delimitation Commission, Kerala</li>
     </ul>
 
     <hr>
 
     <h4>Built with</h4>
-
-    <p>
-        QGIS<br>
-        Leaflet.js<br>
-        JavaScript<br>
-        GeoJSON
-    </p>
-
-    <div id="aboutPanel" class="hidden">
-
-    <h3>Kerala Representatives Map</h3>
-
-    <p><strong>Version:</strong> 1.0</p>
-
-    <p>
-        Interactive election explorer for Kerala,
-        from district level down to individual wards.
-    </p>
+    <p>QGIS<br>Leaflet.js<br>JavaScript<br>GeoJSON</p>
 
     <hr>
 
-    <h4>Created by</h4>
-
-    <p>Gokul Nair</p>
-    <p>Email: gokulv97@hotmail.com </p>
-    <p> LinkedIn: linkedin.com/in/gokul_venu/</p>
-
-    <hr>
-
-    <h4>Data Sources</h4>
-
+    <h4>Highlights</h4>
     <ul>
-        <li>Kerala State Election Commission</li>
-        <li>Election Commission of India</li>
-        <li>Delimitation Commission, Kerala</li>
+      <li>Interactive district, local body and ward navigation</li>
+      <li>Dynamic GeoJSON loading for faster performance</li>
+      <li>Ward-level representative and election results</li>
+      <li>Client-side caching for seamless navigation</li>
+      <li>Built using QGIS, Leaflet and JavaScript</li>
     </ul>
 
     <hr>
 
-    <h4>Built with</h4>
+    <a href="https://github.com/gvnair/Kerala_Representative_Map" target="_blank">View Source on GitHub</a>
+  </div>
 
-<p>
-    QGIS<br>
-    Leaflet.js<br>
-    JavaScript<br>
-    GeoJSON
-</p>
-
-<hr>
-
-<h4>Highlights</h4>
-
-<ul>
-    <li>Interactive district, local body and ward navigation</li>
-    <li>Dynamic GeoJSON loading for faster performance</li>
-    <li>Ward-level representative and election results</li>
-    <li>Client-side caching for seamless navigation</li>
-    <li>Built using QGIS, Leaflet and JavaScript</li>
-</ul>
-
-<hr>
-
-<a href="https://github.com/gvnair/Kerala_Representative_Map"
-   target="_blank">
-    View Source on GitHub
-</a>
-
-</div>
-
- <button id="backButton" style="display:none;">
-    ← Back
-    </button>
+  <button id="backButton" style="display:none;">← Back</button>
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 

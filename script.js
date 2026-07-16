@@ -202,6 +202,16 @@ const browseSidebarToggle = document.getElementById("browseSidebarToggle");
 const districtSelect = document.getElementById("districtSelect");
 const localBodyTypeSelect = document.getElementById("localBodyTypeSelect");
 const localBodySelect = document.getElementById("localBodySelect");
+const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+const mobileMenu = document.getElementById("mobileMenu");
+const mobileMenuBackdrop = document.getElementById("mobileMenuBackdrop");
+const mobileMenuClose = document.getElementById("mobileMenuClose");
+const mobileDistrictSelect = document.getElementById("mobileDistrictSelect");
+const mobileLocalBodyTypeSelect = document.getElementById("mobileLocalBodyTypeSelect");
+const mobileLocalBodySelect = document.getElementById("mobileLocalBodySelect");
+const mobileAccordionButtons = Array.from(document.querySelectorAll(".mobile-menu__section-toggle"));
+const mobileMenuSections = Array.from(document.querySelectorAll(".mobile-menu__section"));
+let isMobileMenuOpen = false;
 
 function updateBackButton() {
 
@@ -245,8 +255,6 @@ backButton.onclick = function () {
 };
 
 function populateDistrictOptions(lookup) {
-  if (!districtSelect) return;
-
   const districts = Array.from(
     new Set(
       Object.values(lookup || {})
@@ -256,16 +264,24 @@ function populateDistrictOptions(lookup) {
     )
   ).sort((a, b) => a.localeCompare(b));
 
-  districtSelect.innerHTML = '<option value="">Select district</option>' +
+  const optionsHtml = '<option value="">Select district</option>' +
     districts.map(district => `<option value="${district}">${district}</option>`).join('');
+
+  [districtSelect, mobileDistrictSelect].forEach(select => {
+    if (!select) return;
+    select.innerHTML = optionsHtml;
+  });
 }
 
 function populateLocalBodyTypeOptions(district) {
-  if (!localBodyTypeSelect) return;
+  const selects = [localBodyTypeSelect, mobileLocalBodyTypeSelect].filter(Boolean);
 
   if (!district) {
-    localBodyTypeSelect.innerHTML = '<option value="">Choose a district first</option>';
-    localBodyTypeSelect.disabled = true;
+    const disabledMessage = '<option value="">Choose a district first</option>';
+    selects.forEach(select => {
+      select.innerHTML = disabledMessage;
+      select.disabled = true;
+    });
     return;
   }
 
@@ -299,17 +315,24 @@ function populateLocalBodyTypeOptions(district) {
     return a.localeCompare(b);
   });
 
-  localBodyTypeSelect.innerHTML = '<option value="">Select local body type</option>' +
+  const optionsHtml = '<option value="">Select local body type</option>' +
     orderedTypes.map(type => `<option value="${type}">${type}</option>`).join('');
-  localBodyTypeSelect.disabled = false;
+
+  selects.forEach(select => {
+    select.innerHTML = optionsHtml;
+    select.disabled = false;
+  });
 }
 
 function populateLocalBodyOptions(district, type) {
-  if (!localBodySelect) return;
+  const selects = [localBodySelect, mobileLocalBodySelect].filter(Boolean);
 
   if (!district || !type) {
-    localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
-    localBodySelect.disabled = true;
+    const placeholder = '<option value="">Choose a type first</option>';
+    selects.forEach(select => {
+      select.innerHTML = placeholder;
+      select.disabled = true;
+    });
     return;
   }
 
@@ -318,14 +341,21 @@ function populateLocalBodyOptions(district, type) {
     .sort((a, b) => a.lsgd_name.localeCompare(b.lsgd_name));
 
   if (!entries.length) {
-    localBodySelect.innerHTML = '<option value="">No local bodies found</option>';
-    localBodySelect.disabled = true;
+    const placeholder = '<option value="">No local bodies found</option>';
+    selects.forEach(select => {
+      select.innerHTML = placeholder;
+      select.disabled = true;
+    });
     return;
   }
 
-  localBodySelect.innerHTML = '<option value="">Select local body</option>' +
+  const optionsHtml = '<option value="">Select local body</option>' +
     entries.map(item => `<option value="${item.sec_kerala_code}">${item.lsgd_name}</option>`).join('');
-  localBodySelect.disabled = false;
+
+  selects.forEach(select => {
+    select.innerHTML = optionsHtml;
+    select.disabled = false;
+  });
 }
 
 function findLayerByFeatureProperty(layerGroup, propertyName, value) {
@@ -345,18 +375,24 @@ async function activateDistrictSelection(layer, districtName) {
 
   selectedDistrict = layer;
 
-  if (districtSelect) {
-    districtSelect.value = districtName;
-  }
+  [districtSelect, mobileDistrictSelect].forEach(select => {
+    if (select) {
+      select.value = districtName;
+    }
+  });
 
   populateLocalBodyTypeOptions(districtName);
-  if (localBodySelect) {
-    localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
-    localBodySelect.disabled = true;
-  }
-  if (localBodyTypeSelect) {
-    localBodyTypeSelect.value = "";
-  }
+  [localBodySelect, mobileLocalBodySelect].forEach(select => {
+    if (select) {
+      select.innerHTML = '<option value="">Choose a type first</option>';
+      select.disabled = true;
+    }
+  });
+  [localBodyTypeSelect, mobileLocalBodyTypeSelect].forEach(select => {
+    if (select) {
+      select.value = "";
+    }
+  });
 
   applySelectionStyle(selectedDistrict, null, {
     color: "#000",
@@ -383,9 +419,11 @@ async function activateLocalBodySelection(feature, layer, info) {
     return;
   }
 
-  if (localBodySelect) {
-    localBodySelect.value = info.sec_kerala_code;
-  }
+  [localBodySelect, mobileLocalBodySelect].forEach(select => {
+    if (select) {
+      select.value = info.sec_kerala_code;
+    }
+  });
 
   currentLocalBody = feature.properties.sec_kerala_code;
 
@@ -397,6 +435,10 @@ async function activateLocalBodySelection(feature, layer, info) {
     weight: 2.7,
     fillOpacity: 0.28
   });
+
+  if (window.innerWidth <= 768) {
+    collapseBrowseMenuSection();
+  }
 
   await loadWardLayer(info.district, info.sec_kerala_code);
 
@@ -442,6 +484,48 @@ async function activateLocalBodySelection(feature, layer, info) {
   `).openPopup();
 }
 
+function openMobileMenu() {
+  if (!mobileMenu || !mobileMenuBackdrop) return;
+  mobileMenu.classList.add("is-open");
+  mobileMenuBackdrop.classList.add("is-visible");
+  mobileMenu.setAttribute("aria-hidden", "false");
+  mobileMenuToggle.setAttribute("aria-expanded", "true");
+  isMobileMenuOpen = true;
+}
+
+function closeMobileMenu() {
+  if (!mobileMenu || !mobileMenuBackdrop) return;
+  mobileMenu.classList.remove("is-open");
+  mobileMenuBackdrop.classList.remove("is-visible");
+  mobileMenu.setAttribute("aria-hidden", "true");
+  mobileMenuToggle.setAttribute("aria-expanded", "false");
+  isMobileMenuOpen = false;
+}
+
+function toggleMobileMenu() {
+  if (isMobileMenuOpen) {
+    closeMobileMenu();
+  } else {
+    openMobileMenu();
+  }
+}
+
+function setMobileAccordionState(sectionElement, shouldOpen) {
+  if (!sectionElement) return;
+  sectionElement.classList.toggle("is-open", shouldOpen);
+  const toggle = sectionElement.querySelector(".mobile-menu__section-toggle");
+  if (toggle) {
+    toggle.setAttribute("aria-expanded", String(shouldOpen));
+  }
+}
+
+function collapseBrowseMenuSection() {
+  const browseSection = mobileMenuSections.find(section => section.querySelector("[data-target='browseMobilePanel']"));
+  if (browseSection) {
+    setMobileAccordionState(browseSection, false);
+  }
+}
+
 function setupBrowseSidebar() {
   if (!browseSidebar || !browseSidebarToggle || !districtSelect || !localBodyTypeSelect || !localBodySelect) return;
 
@@ -451,36 +535,82 @@ function setupBrowseSidebar() {
     browseSidebarToggle.querySelector(".browse-sidebar__toggle-icon").textContent = isCollapsed ? "+" : "−";
   });
 
-  districtSelect.addEventListener("change", async function () {
-    const districtName = this.value;
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener("click", toggleMobileMenu);
+  }
+
+  if (mobileMenuClose) {
+    mobileMenuClose.addEventListener("click", closeMobileMenu);
+  }
+
+  if (mobileMenuBackdrop) {
+    mobileMenuBackdrop.addEventListener("click", closeMobileMenu);
+  }
+
+  mobileAccordionButtons.forEach(button => {
+    button.addEventListener("click", function () {
+      const panelId = this.getAttribute("data-target");
+      const section = this.closest(".mobile-menu__section");
+      const shouldOpen = !section.classList.contains("is-open");
+
+      mobileMenuSections.forEach(item => {
+        const toggle = item.querySelector(".mobile-menu__section-toggle");
+        if (toggle && toggle !== this) {
+          setMobileAccordionState(item, false);
+        }
+      });
+
+      if (shouldOpen) {
+        setMobileAccordionState(section, true);
+      } else {
+        setMobileAccordionState(section, false);
+      }
+    });
+  });
+
+  const handleDistrictSelection = async function (sourceSelect) {
+    const districtName = sourceSelect.value;
 
     if (!districtName) {
-      localBodyTypeSelect.innerHTML = '<option value="">Choose a district first</option>';
-      localBodyTypeSelect.disabled = true;
-      localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
-      localBodySelect.disabled = true;
+      [localBodyTypeSelect, mobileLocalBodyTypeSelect].forEach(select => {
+        if (select) {
+          select.innerHTML = '<option value="">Choose a district first</option>';
+          select.disabled = true;
+        }
+      });
+
+      [localBodySelect, mobileLocalBodySelect].forEach(select => {
+        if (select) {
+          select.innerHTML = '<option value="">Choose a type first</option>';
+          select.disabled = true;
+        }
+      });
       return;
     }
 
     populateLocalBodyTypeOptions(districtName);
-    localBodySelect.innerHTML = '<option value="">Choose a type first</option>';
-    localBodySelect.disabled = true;
+    [localBodySelect, mobileLocalBodySelect].forEach(select => {
+      if (select) {
+        select.innerHTML = '<option value="">Choose a type first</option>';
+        select.disabled = true;
+      }
+    });
 
     const districtLayerMatch = findLayerByFeatureProperty(districtLayer, "district", districtName);
     if (districtLayerMatch) {
       await activateDistrictSelection(districtLayerMatch, districtName);
     }
-  });
+  };
 
-  localBodyTypeSelect.addEventListener("change", function () {
-    const districtName = districtSelect.value;
-    const typeName = this.value;
+  const handleLocalBodyTypeSelection = function (sourceSelect) {
+    const districtName = districtSelect.value || mobileDistrictSelect?.value || "";
+    const typeName = sourceSelect.value;
 
     populateLocalBodyOptions(districtName, typeName);
-  });
+  };
 
-  localBodySelect.addEventListener("change", async function () {
-    const secCode = this.value;
+  const handleLocalBodySelection = async function (sourceSelect) {
+    const secCode = sourceSelect.value;
 
     if (!secCode) return;
 
@@ -495,6 +625,48 @@ function setupBrowseSidebar() {
     const layerMatch = findLayerByFeatureProperty(localBodyLayer, "sec_kerala_code", secCode);
     if (layerMatch) {
       await activateLocalBodySelection(layerMatch.feature, layerMatch, info);
+    }
+  };
+
+  [districtSelect, mobileDistrictSelect].forEach(select => {
+    if (!select) return;
+    select.addEventListener("change", async function () {
+      [districtSelect, mobileDistrictSelect].forEach(item => {
+        if (item && item !== this) {
+          item.value = this.value;
+        }
+      });
+      await handleDistrictSelection(this);
+    });
+  });
+
+  [localBodyTypeSelect, mobileLocalBodyTypeSelect].forEach(select => {
+    if (!select) return;
+    select.addEventListener("change", function () {
+      [localBodyTypeSelect, mobileLocalBodyTypeSelect].forEach(item => {
+        if (item && item !== this) {
+          item.value = this.value;
+        }
+      });
+      handleLocalBodyTypeSelection(this);
+    });
+  });
+
+  [localBodySelect, mobileLocalBodySelect].forEach(select => {
+    if (!select) return;
+    select.addEventListener("change", async function () {
+      [localBodySelect, mobileLocalBodySelect].forEach(item => {
+        if (item && item !== this) {
+          item.value = this.value;
+        }
+      });
+      await handleLocalBodySelection(this);
+    });
+  });
+
+  window.addEventListener("resize", function () {
+    if (window.innerWidth > 768) {
+      closeMobileMenu();
     }
   });
 }
@@ -754,7 +926,7 @@ Promise.all([
       // Standardized search name
       feature.properties.name = p.ls_seat_name;
 
-      feature.properties.search_label = `${p.ls_seat_name} (Lok Sabha)`;
+      feature.properties.search_label = `🟣 ${p.ls_seat_name} Lok Sabha`;
 
       feature.properties.layer_type = "loksabha";
 
@@ -826,7 +998,7 @@ Promise.all([
       feature.properties.name = p.Asmbly_Con;
 
       feature.properties.search_label =
-        `${p.Asmbly_Con} (Assembly)`;
+        `🏛 ${p.Asmbly_Con} Assembly`;
 
         feature.properties.layer_type = "assembly";
 
@@ -909,7 +1081,7 @@ Promise.all([
       feature.properties.name = p.district;
 
       feature.properties.search_label =
-        `${p.district} (District)`;
+        `📍 ${p.district} District`;
 
         feature.properties.layer_type = "district";
 
@@ -1034,7 +1206,7 @@ map.fitBounds(districtLayer.getBounds());
 
     div.innerHTML = `
 
-      <h4>Legend</h4>
+      <h4>Political Alliance Colours</h4>
 
       <div>
         <span class="legend-color" style="background:#e53935;"></span>
